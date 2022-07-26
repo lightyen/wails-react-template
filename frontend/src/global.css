@@ -1,0 +1,6 @@
+:root {
+	--dialog-width: 525px;
+	--radius: 0.5rem;
+	--control-ratio: 1;
+	--titlebar-height: 30px;
+}

@@ -1,0 +1,17 @@
+press: "{key} を押す"
+submit: 提出する
+system_mode: システム
+light_mode: ライトモード
+dark_mode: ダークモード
+
+apply: 適用
+add: 追加
+remove: 削除
+cancel: キャンセル
+confirm: はい
+"on": オン
+"off": オフ
+
+apply_success: 設定が適用されました！
+invalid_message_000: invalid value
+close: 閉じる

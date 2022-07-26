@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "golang.go",
+    "codeandstuff.package-json-upgrade",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "styled-components.vscode-styled-components",
+    "lightyen.twobj-intellisense",
+    "naumovs.color-highlight",
+    "pkief.material-icon-theme"
+  ]
+}

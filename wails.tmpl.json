@@ -1,0 +1,9 @@
+{
+  "name": "{{.ProjectName}}",
+  "outputfilename": "{{.ProjectName}}",
+  "assetdir": "frontend/dist",
+  "frontend:install": "pnpm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto"
+}

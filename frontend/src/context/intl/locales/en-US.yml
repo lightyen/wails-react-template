@@ -1,0 +1,17 @@
+press: Press {key}
+submit: Submit
+system_mode: System
+light_mode: light
+dark_mode: Dark
+
+apply: Apply
+add: Add
+remove: Remove
+cancel: Cancel
+confirm: "Yes"
+"on": "On"
+"off": "Off"
+
+apply_success: Configuration changes are applied.
+invalid_message_000: invalid value
+close: Close

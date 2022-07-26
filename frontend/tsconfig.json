@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "types": ["vite/client", "@emotion/react/types/css-prop", "babel-plugin-twobj/types/emotion"],
+    "lib": ["esnext", "dom", "dom.iterable", "webworker"],
+    "jsx": "preserve",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "strict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "paths": {
+      "@wails/*": ["./wailsjs/go/*"],
+      "@wails/runtime": ["./wailsjs/runtime"],
+      "@context": ["./src/context"],
+      "@context/*": ["./src/context/*"],
+      "@components/*": ["./src/components/*"],
+      "@concepts/*": ["./src/concepts/*"]
+    }
+  }
+}

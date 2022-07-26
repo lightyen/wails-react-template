@@ -1,0 +1,17 @@
+press: 按下 {key}
+submit: 提交
+system_mode: 系統主題
+light_mode: 亮色
+dark_mode: 暗色
+
+apply: 套用
+add: 新增
+remove: 移除
+cancel: 取消
+confirm: 確定
+"on": 開
+"off": 關
+
+apply_success: 已成功套用此設定。
+invalid_message_000: 不合法的數值
+close: 關閉

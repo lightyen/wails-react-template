@@ -1,0 +1,24 @@
+# golangci-lint v1.54.2
+# https://github.com/golangci/golangci-lint
+
+run:
+  concurrency: 8
+
+linters:
+  enable:
+    - revive
+    - bodyclose
+  disable:
+    - unused
+    - depguard
+    - gci
+    - errcheck # https://github.com/kisielk/errcheck/issues/55
+  presets:
+    - import
+linters-settings:
+  revive:
+    rules:
+      - name: var-naming
+        Disabled: true
+      - name: blank-imports
+        Disabled: true
