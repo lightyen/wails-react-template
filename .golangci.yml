@@ -1,0 +1,10 @@
+run:
+  concurrency: 8
+
+linters:
+  enable:
+    - revive
+    - staticcheck
+    - misspell
+  presets:
+    - import

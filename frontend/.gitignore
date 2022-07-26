@@ -1,0 +1,14 @@
+dist/*
+!dist/index.html
+wailsjs
+node_modules
+test
+.cache
+.DS_Store
+.directory
+*.log
+*.pfx
+npm-debug.log
+npm-debug.log.*
+thumbs.db
+stat.json
