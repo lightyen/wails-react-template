@@ -38,7 +38,7 @@ export function TitleBar({ className }: { className?: string }) {
 
 function DragRegion({ children, className }: React.PropsWithChildren<{ className?: string }>) {
 	return (
-		<div aria-label="data-wails-drag" data-wails-drag className={className}>
+		<div aria-label="wails-drag-region" tw="[--wails-draggable: drag]" className={className}>
 			{children}
 		</div>
 	)
