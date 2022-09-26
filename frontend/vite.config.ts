@@ -15,7 +15,7 @@ export default defineConfig({
 		react({
 			jsxImportSource: "@emotion/react",
 			babel: {
-				plugins: [["twobj", { tailwindConfig }], "@emotion"],
+				plugins: [["twobj", { tailwindConfig, throwError: true }], "@emotion"],
 			},
 		}),
 	],

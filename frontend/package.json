@@ -38,13 +38,13 @@
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
     "@reduxjs/toolkit": "1.8.5",
-    "@tanstack/react-query": "4.3.9",
+    "@tanstack/react-query": "4.6.0",
     "axios": "0.27.2",
-    "babel-plugin-twobj": "2.0.2",
+    "babel-plugin-twobj": "2.0.4",
     "react-redux": "8.0.4",
     "redux": "4.2.0",
     "redux-saga": "1.2.1",
-    "twobj": "2.1.5"
+    "twobj": "2.2.2"
   },
   "browserslist": [
     "defaults",
