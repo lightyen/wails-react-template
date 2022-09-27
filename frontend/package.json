@@ -40,18 +40,17 @@
     "@reduxjs/toolkit": "1.8.5",
     "@tanstack/react-query": "4.6.0",
     "axios": "0.27.2",
-    "babel-plugin-twobj": "2.0.4",
+    "babel-plugin-twobj": "2.0.5",
     "react-redux": "8.0.4",
     "redux": "4.2.0",
     "redux-saga": "1.2.1",
-    "twobj": "2.2.2"
+    "twobj": "2.2.3"
   },
   "browserslist": [
     "defaults",
     "not IE 11"
   ],
   "prettier": {
-    "semi": false,
     "arrowParens": "avoid",
     "trailingComma": "all"
   }
