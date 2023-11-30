@@ -128,7 +128,6 @@ function TodolistAnimated({
 				>
 					<div tw="flex gap-4 items-center">
 						<Input
-							tw="grow"
 							defaultValue={item.value}
 							aria-invalid={errors.list?.[i]?.value != null}
 							{...register(`list.${i}.value`)}
