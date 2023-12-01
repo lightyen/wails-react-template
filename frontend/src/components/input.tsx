@@ -10,7 +10,7 @@ const style = {
 	focus-within:(outline-none ring-1 ring-ring)
 	disabled:(cursor-not-allowed opacity-50)`),
 	passwordReveal: css(
-		tw`text-muted-foreground disabled: p-1 focus:outline-none transition rounded-lg disabled:(pointer-events-none cursor-not-allowed text-muted)`,
+		tw`text-muted-foreground p-1 focus:outline-none transition rounded-lg disabled:(pointer-events-none cursor-not-allowed text-muted)`,
 	),
 	passwordInput: css(
 		tw`w-0 flex-1 focus-visible:outline-none bg-transparent [::-ms-reveal]:hidden disabled:cursor-not-allowed`,
