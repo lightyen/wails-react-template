@@ -3,9 +3,6 @@ import { Command, CommandItem, CommandList } from "@components/command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@components/popover"
 import { useAction, useSelect } from "@context"
 import { CheckIcon } from "@radix-ui/react-icons"
-import { tw } from "twobj"
-
-const style = tw`flex justify-between [& svg]:invisible [&[data-state=selected] svg]:visible`
 
 export function SwitchLanguage() {
 	const locale = useSelect(state => state.intl.locale)
@@ -33,7 +30,7 @@ export function SwitchLanguage() {
 							<CommandItem
 								data-state={locale === "en-US" ? "selected" : ""}
 								onSelect={() => setLocale("en-US")}
-								css={style}
+								tw="flex justify-between [& svg]:invisible [&[data-state=selected] svg]:visible"
 							>
 								<span tw="pointer-events-none capitalize">English</span>
 								<CheckIcon />
@@ -41,7 +38,7 @@ export function SwitchLanguage() {
 							<CommandItem
 								data-state={locale === "ja-JP" ? "selected" : ""}
 								onSelect={() => setLocale("ja-JP")}
-								css={style}
+								tw="flex justify-between [& svg]:invisible [&[data-state=selected] svg]:visible"
 							>
 								<span tw="pointer-events-none capitalize">日本語</span>
 								<CheckIcon />
@@ -49,7 +46,7 @@ export function SwitchLanguage() {
 							<CommandItem
 								data-state={locale === "zh-TW" ? "selected" : ""}
 								onSelect={() => setLocale("zh-TW")}
-								css={style}
+								tw="flex justify-between [& svg]:invisible [&[data-state=selected] svg]:visible"
 							>
 								<span tw="pointer-events-none capitalize">正體中文</span>
 								<CheckIcon />

@@ -1,34 +1,20 @@
 import { css } from "@emotion/react"
 import { forwardRef, useId, useRef, type InputHTMLAttributes } from "react"
-import { tw } from "twobj"
+import { tw, tx } from "twobj"
 
 const InputControl = tw.input`hidden`
 
-const style = {
-	container: css(tw`inline-flex h-[20px] w-[36px] shrink-0 cursor-pointer items-center rounded-full
-	border-2 border-transparent shadow-sm transition-colors
-	bg-input
-	focus-visible:(outline-none ring-2 ring-ring ring-offset-2 ring-offset-background)
-	after:(pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 ring-offset-0 transition-transform)
-	`),
-	thumb: css(
-		tw`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform translate-x-0`,
-	),
-	effects: css`
-		${InputControl}:focus-visible + & {
-			// ${tw`outline-none ring-2 ring-ring ring-offset-2 ring-offset-background`}
-		}
-		${InputControl}:disabled + & {
-			${tw`cursor-not-allowed opacity-50`}
-		}
-		${InputControl}:checked + & {
-			${tw`bg-primary`}
-		}
-		${InputControl}:checked + &::after {
-			${tw`translate-x-4`}
-		}
-	`,
-}
+const effects = css`
+	${InputControl}:disabled + & {
+		${tx`cursor-not-allowed opacity-50`}
+	}
+	${InputControl}:checked + & {
+		${tx`bg-primary`}
+	}
+	${InputControl}:checked + &::after {
+		${tx`translate-x-4`}
+	}
+`
 
 export const Switch = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
 	({ id, className, onFocus, onBlur, onKeyDown, ...props }, ref) => {
@@ -55,7 +41,13 @@ export const Switch = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInput
 					htmlFor={id}
 					tabIndex={0}
 					role="checkbox"
-					css={[style.container, style.effects]}
+					tw="inline-flex h-[20px] w-[36px] shrink-0 cursor-pointer items-center rounded-full
+						border-2 border-transparent shadow-sm transition-colors
+						bg-input
+						focus-visible:(outline-none ring-2 ring-ring ring-offset-2 ring-offset-background)
+						after:(pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 ring-offset-0 transition-transform)
+					"
+					css={effects}
 					className={className}
 					onFocus={_ => {
 						isFocus.current = true

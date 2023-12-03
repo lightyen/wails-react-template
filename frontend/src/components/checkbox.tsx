@@ -1,38 +1,33 @@
 import { css } from "@emotion/react"
 import { CheckIcon, DividerHorizontalIcon } from "@radix-ui/react-icons"
 import { InputHTMLAttributes, forwardRef, useEffect, useId, useRef } from "react"
-import { tw } from "twobj"
+import { tw, tx } from "twobj"
 
 const InputControl = tw.input`hidden`
 
-const style = {
-	container: css(tw`h-4 w-4 shrink-0 rounded-lg border border-primary shadow select-none cursor-pointer
-	focus-visible:(outline-none ring-1 ring-ring)`),
-	indicator: css(tw`flex items-center text-current`),
-	effects: css`
-		${InputControl}:focus-visible + & {
-			${tw`outline-none ring-1 ring-ring`}
-		}
-		${InputControl}:disabled + & {
-			${tw`cursor-not-allowed opacity-50`}
-		}
-		${InputControl}:checked + &, ${InputControl}:indeterminate + & {
-			${tw`bg-primary text-primary-foreground`}
-		}
-		${InputControl}:not(:checked) + & .checked_icon {
-			${tw`hidden`}
-		}
-		${InputControl}:indeterminate + & .checked_icon {
-			${tw`hidden`}
-		}
-		${InputControl}:not(:indeterminate) + & .indeterminated_icon {
-			${tw`hidden`}
-		}
-		${InputControl}:indeterminate + & .indeterminated_icon {
-			${tw`visible`}
-		}
-	`,
-}
+const effects = css`
+	${InputControl}:focus-visible + & {
+		${tx`outline-none ring-1 ring-ring`}
+	}
+	${InputControl}:disabled + & {
+		${tx`cursor-not-allowed opacity-50`}
+	}
+	${InputControl}:checked + &, ${InputControl}:indeterminate + & {
+		${tx`bg-primary text-primary-foreground`}
+	}
+	${InputControl}:not(:checked) + & .checked_icon {
+		${tx`hidden`}
+	}
+	${InputControl}:indeterminate + & .checked_icon {
+		${tx`hidden`}
+	}
+	${InputControl}:not(:indeterminate) + & .indeterminated_icon {
+		${tx`hidden`}
+	}
+	${InputControl}:indeterminate + & .indeterminated_icon {
+		${tx`visible`}
+	}
+`
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
 	intermediate?: boolean | undefined
@@ -70,7 +65,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 					htmlFor={id}
 					tabIndex={0}
 					role="checkbox"
-					css={[style.container, style.indicator, style.effects]}
+					tw="h-4 w-4 shrink-0 rounded-lg border border-primary shadow select-none cursor-pointer
+						focus-visible:(outline-none ring-1 ring-ring)
+						flex items-center text-current
+					"
+					css={effects}
 					className={className}
 					onFocus={_ => {
 						isFocus.current = true

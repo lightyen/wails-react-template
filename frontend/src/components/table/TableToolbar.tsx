@@ -8,7 +8,6 @@ import { Input } from "../input"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
 import type { FilterState, Label, TableColumnItem } from "./model"
 import { GlobalCheckboxContext, type TableContext } from "./reducer"
-import { style } from "./style"
 
 function commandLabel(Label: Label, context?: GlobalCheckboxContext) {
 	if (typeof Label === "string") {
@@ -49,7 +48,7 @@ function TableToolbarAddFilters<T extends {}>({
 					filter && id !== "checkbox" ? (
 						<CommandItem
 							key={id}
-							css={style.toolbar.columnView}
+							tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
 							onSelect={toggleFilter}
 							data-state={filters[id] ? "selected" : ""}
 						>
@@ -158,7 +157,7 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 								return (
 									<CommandItem
 										key={i}
-										css={style.toolbar.columnView}
+										tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
 										data-state={selected ? "selected" : ""}
 										onSelect={() => column.toggleFilterOption(opt)}
 									>
@@ -219,7 +218,7 @@ function TableToolbarColumnView<T extends {}>({ columns }: { columns: TableColum
 								canSelected ? (
 									<CommandItem
 										key={id}
-										css={style.toolbar.columnView}
+										tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
 										onSelect={() => {
 											toggleColumn()
 											close()
@@ -258,7 +257,7 @@ export function TableToolbar<T extends {}>(context: TableContext<T>) {
 			</div>
 			<Popover placement="bottom-start">
 				<PopoverTrigger>
-					<Button variant="outline" size="sm" css={style.toolbar.button}>
+					<Button variant="outline" size="sm" tw="px-3 h-8 flex gap-2 justify-between items-center">
 						<MdiFilterPlusOutlineIcon />
 						Add Filter
 					</Button>
@@ -274,7 +273,7 @@ export function TableToolbar<T extends {}>(context: TableContext<T>) {
 			<TableToolbarFilters filters={context.filters} />
 			<Popover placement="bottom-end">
 				<PopoverTrigger>
-					<Button variant="outline" size="sm" tw="ml-auto" css={style.toolbar.button}>
+					<Button variant="outline" size="sm" tw="ml-auto px-3 h-8 flex gap-2 justify-between items-center">
 						<MixerHorizontalIcon tw="h-4 w-4" />
 						<span>View</span>
 					</Button>

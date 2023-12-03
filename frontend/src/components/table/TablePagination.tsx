@@ -10,7 +10,6 @@ import { Button } from "../button"
 import { Command, CommandItem, CommandList } from "../command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
 import { PaginationFeature } from "./feature"
-import { style } from "./style"
 
 function SwitchLimit({ limitOptions, limit, setLimit }: PaginationFeature) {
 	return (
@@ -33,7 +32,7 @@ function SwitchLimit({ limitOptions, limit, setLimit }: PaginationFeature) {
 										key={i}
 										onSelect={() => setLimit(value)}
 										data-state={limit === value ? "selected" : ""}
-										css={style.pagination.limitItem}
+										tw="flex justify-between [& svg]:invisible [&[data-state=selected] svg]:visible"
 									>
 										<span tw="pointer-events-none">{value}</span>
 										<CheckIcon />
@@ -72,10 +71,10 @@ export function TablePagination(props: PaginationFeature) {
 									key={i}
 									onClick={first}
 									variant="outline"
-									css={style.pagination.last}
+									tw="hidden h-8 w-8 p-0 lg:flex"
 									disabled={item.disabled}
 								>
-									<DoubleArrowLeftIcon css={style.pagination.icon} />
+									<DoubleArrowLeftIcon tw="h-4 w-4" />
 								</Button>
 							)
 
@@ -85,10 +84,10 @@ export function TablePagination(props: PaginationFeature) {
 									key={i}
 									onClick={prev}
 									variant="outline"
-									css={style.pagination.next}
+									tw="h-8 w-8 p-0"
 									disabled={item.disabled}
 								>
-									<ChevronLeftIcon css={style.pagination.icon} />
+									<ChevronLeftIcon tw="h-4 w-4" />
 								</Button>
 							)
 
@@ -98,10 +97,10 @@ export function TablePagination(props: PaginationFeature) {
 									key={i}
 									onClick={next}
 									variant="outline"
-									css={style.pagination.next}
+									tw="h-8 w-8 p-0"
 									disabled={item.disabled}
 								>
-									<ChevronRightIcon css={style.pagination.icon} />
+									<ChevronRightIcon tw="h-4 w-4" />
 								</Button>
 							)
 
@@ -111,10 +110,10 @@ export function TablePagination(props: PaginationFeature) {
 									key={i}
 									onClick={last}
 									variant="outline"
-									css={style.pagination.last}
+									tw="hidden h-8 w-8 p-0 lg:flex"
 									disabled={item.disabled}
 								>
-									<DoubleArrowRightIcon css={style.pagination.icon} />
+									<DoubleArrowRightIcon tw="h-4 w-4" />
 								</Button>
 							)
 						default:

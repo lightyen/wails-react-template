@@ -2,39 +2,18 @@ import { isElement } from "@components/lib"
 import { css } from "@emotion/react"
 import { Children, useEffect, useId, useState, type ReactElement } from "react"
 import { type NavigateFunction } from "react-router-dom"
-import { tw } from "twobj"
-
-export const scrolltabs = css(tw`
-	pb-3 -mb-3
-	overflow-auto
-	sm:(
-		[::-webkit-scrollbar]:(w-[6px] h-[7px])
-		[::-webkit-scrollbar-thumb]:(bg-muted-foreground/20 hover:bg-muted-foreground/60)
-	)
-	`)
+import { tw, tx } from "twobj"
 
 const InputControl = tw.input`hidden`
 
-const style = {
-	ul: css(tw`text-sm leading-none font-semibold flex whitespace-nowrap bg-transparent -mb-1 border-b`),
-	li: css(tw`-mb-px`),
-	label: css`
-		${tw`
-		select-none
-		text-muted-foreground inline-block relative whitespace-nowrap capitalize transition cursor-pointer
-		border-b
-		px-4 pt-2 pb-3
-		after:(translate-y-px h-[2px] absolute left-0 bottom-0 w-full transition-all duration-200 scale-0 opacity-0)
-		hover:text-foreground
-	`}
-		${InputControl}:checked + & {
-			${tw`text-foreground`}
-		}
-		${InputControl}:checked + &::after {
-			${tw`bg-primary translate-y-px scale-100 opacity-100`}
-		}
-	`,
-}
+const effects = css`
+	${InputControl}:checked + & {
+		${tx`text-foreground`}
+	}
+	${InputControl}:checked + &::after {
+		${tx`bg-primary translate-y-px scale-100 opacity-100`}
+	}
+`
 
 interface RouteTabProps {
 	title: ReactElement | string | number
@@ -75,10 +54,17 @@ export function RouterTabs({ children, to: propTo, onNavigate }: RouterTabsProps
 	const notMatched = labels.findIndex(({ props: { to } }) => to === stateTo) === -1
 
 	return (
-		<div css={scrolltabs}>
-			<ul css={style.ul}>
+		<div
+			tw="pb-3 -mb-3 overflow-auto
+				sm:(
+					[::-webkit-scrollbar]:(w-[6px] h-[7px])
+					[::-webkit-scrollbar-thumb]:(bg-muted-foreground/20 hover:bg-muted-foreground/60)
+				)
+			"
+		>
+			<ul tw="text-sm leading-none font-semibold flex whitespace-nowrap bg-transparent -mb-1 border-b">
 				{labels.map(({ props: { to, title } }, i) => (
-					<li key={indices[i]} css={style.li}>
+					<li key={indices[i]} tw="-mb-px">
 						<InputControl
 							type="radio"
 							name={id}
@@ -91,7 +77,17 @@ export function RouterTabs({ children, to: propTo, onNavigate }: RouterTabsProps
 								onNavigate?.(to, undefined)
 							}}
 						/>
-						<label htmlFor={indices[i]} css={style.label}>
+						<label
+							htmlFor={indices[i]}
+							tw="select-none
+								text-muted-foreground inline-block relative whitespace-nowrap capitalize transition cursor-pointer
+								border-b
+								px-4 pt-2 pb-3
+								after:(translate-y-px h-[2px] absolute left-0 bottom-0 w-full transition-all duration-200 scale-0 opacity-0)
+								hover:text-foreground
+							"
+							css={effects}
+						>
 							{title}
 						</label>
 					</li>

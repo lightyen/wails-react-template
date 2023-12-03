@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { animated, easings, useSpringRef, useTransition } from "@react-spring/web"
 import {
@@ -17,27 +16,11 @@ import {
 	type ReactNode,
 } from "react"
 import { FormattedMessage } from "react-intl"
-import { tw } from "twobj"
+import { tx } from "twobj"
 import { Button, type ButtonProps } from "./button"
 import { isElement } from "./lib"
 import { dialogContext } from "./lib/dialogContext"
 import { Overlay } from "./overlay"
-
-const style = {
-	content: css(tw`absolute left-[50%] top-[50%] shadow-lg origin-center sm:(rounded-lg w-full)`),
-	contentLayout: css(tw`
-		grid gap-4 border bg-background p-6
-		w-full max-w-lg sm:max-w-[var(--dialog-width)]
-	`),
-	header: css(tw`flex flex-col space-y-1.5 text-center sm:text-left`),
-	title: css(tw`text-lg font-semibold leading-none tracking-tight`),
-	description: css(tw`text-sm text-muted-foreground`),
-	footer: css(tw`flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2`),
-	closeBtn: css(tw`absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
-	hover:opacity-100
-	focus:(outline-none ring-2 ring-ring ring-offset-2)
-	disabled:pointer-events-none`),
-}
 
 export function useDialog(initialState: boolean | (() => boolean) = false) {
 	const [visible, setVisible] = useState(initialState)
@@ -73,7 +56,13 @@ export function DialogTrigger({ children, ...props }: PropsWithChildren<Omit<But
 function CloseButton() {
 	return (
 		<DialogClose>
-			<button type="button" css={style.closeBtn}>
+			<button
+				type="button"
+				tw="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
+	hover:opacity-100
+	focus:(outline-none ring-2 ring-ring ring-offset-2)
+	disabled:pointer-events-none"
+			>
 				<Cross2Icon tw="h-4 w-4" />
 				<span tw="sr-only">
 					<FormattedMessage id="close" />
@@ -138,7 +127,11 @@ export function DialogContent({
 					role="dialog"
 					{...props}
 					style={s}
-					css={[style.content, layout === true && style.contentLayout]}
+					tw="absolute left-[50%] top-[50%] shadow-lg origin-center sm:(rounded-lg w-full)"
+					css={
+						layout === true &&
+						tx`grid gap-4 border bg-background p-6 w-full max-w-lg sm:max-w-[var(--dialog-width)]`
+					}
 					onPointerDown={event => {
 						event.stopPropagation()
 						onPointerDown?.(event)
@@ -172,7 +165,15 @@ export function DialogClose({
 
 	if (!isValidElement(children) || isElement(children, FormattedMessage)) {
 		return (
-			<button type="button" css={style.closeBtn} {...props} onClick={() => setVisible(false)}>
+			<button
+				type="button"
+				tw="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
+			hover:opacity-100
+			focus:(outline-none ring-2 ring-ring ring-offset-2)
+			disabled:pointer-events-none"
+				{...props}
+				onClick={() => setVisible(false)}
+			>
 				{children}
 			</button>
 		)
@@ -190,7 +191,7 @@ export function DialogClose({
 
 export function DialogHeader({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.header} {...props}>
+		<div tw="flex flex-col space-y-1.5 text-center sm:text-left" {...props}>
 			{children}
 		</div>
 	)
@@ -198,7 +199,7 @@ export function DialogHeader({ children, ...props }: PropsWithChildren<HTMLAttri
 
 export function DialogTitle({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.title} {...props}>
+		<div tw="text-lg font-semibold leading-none tracking-tight" {...props}>
 			{children}
 		</div>
 	)
@@ -206,7 +207,7 @@ export function DialogTitle({ children, ...props }: PropsWithChildren<HTMLAttrib
 
 export function DialogDescription({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.description} {...props}>
+		<div tw="text-sm text-muted-foreground" {...props}>
 			{children}
 		</div>
 	)
@@ -214,7 +215,7 @@ export function DialogDescription({ children, ...props }: PropsWithChildren<HTML
 
 export function DialogFooter({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.footer} {...props}>
+		<div tw="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2" {...props}>
 			{children}
 		</div>
 	)

@@ -4,10 +4,7 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@componen
 import { Half2Icon, MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { useState } from "react"
 import { FormattedMessage } from "react-intl"
-import { tw } from "twobj"
 import { setTheme } from "./theme"
-
-const style = tw`flex items-center gap-2`
 
 export function SwitchTheme() {
 	type ThemeStyle = "system" | "light" | "dark"
@@ -41,7 +38,7 @@ export function SwitchTheme() {
 									setTheme({ style: "system" })
 									setStyle("system")
 								}}
-								css={style}
+								tw="flex items-center gap-2"
 							>
 								<Half2Icon />
 								<span tw="pointer-events-none capitalize">
@@ -54,7 +51,7 @@ export function SwitchTheme() {
 									setTheme({ style: "light" })
 									setStyle("light")
 								}}
-								css={style}
+								tw="flex items-center gap-2"
 							>
 								<SunIcon />
 								<span tw="pointer-events-none capitalize">
@@ -67,7 +64,7 @@ export function SwitchTheme() {
 									setTheme({ style: "dark" })
 									setStyle("dark")
 								}}
-								css={style}
+								tw="flex items-center gap-2"
 							>
 								<MoonIcon />
 								<span tw="pointer-events-none capitalize">

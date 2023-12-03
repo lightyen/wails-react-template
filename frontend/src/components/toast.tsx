@@ -1,5 +1,4 @@
 import { useAction, useSelect } from "@context"
-import { css } from "@emotion/react"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { animated, easings, useSpringRef, useTransition } from "@react-spring/web"
 import cx from "clsx"
@@ -14,20 +13,20 @@ import {
 	type ReactElement,
 } from "react"
 import { FormattedMessage } from "react-intl"
-import { tw } from "twobj"
+import { tx } from "twobj"
 import { isElement, zs } from "./lib"
 
 const toastVariants = zs(
-	css(tw`pointer-events-auto touch-none transition-colors
+	tx`pointer-events-auto touch-none transition-colors
 	relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md border
 	p-4 pr-6 shadow-lg
-	`),
+	`,
 	{
 		variants: {
 			variant: {
-				default: css(tw`border bg-background text-foreground`),
-				destructive: css(tw`border-destructive bg-destructive text-destructive-foreground`),
-				primary: css(tw`bg-background border-primary`),
+				default: tx`border bg-background text-foreground`,
+				destructive: tx`border-destructive bg-destructive text-destructive-foreground`,
+				primary: tx`bg-background border-primary`,
 			},
 		},
 		defaultVariants: {
@@ -35,40 +34,6 @@ const toastVariants = zs(
 		},
 	},
 )
-
-const style = {
-	title: css(tw`text-sm font-semibold [&+div]:text-xs`),
-	description: css(tw`text-sm opacity-90`),
-	closeBtn: css(tw`
-	absolute right-0.5 top-0.5 rounded-md p-0.5 text-foreground/50 not-mobile:opacity-0 transition-opacity
-	hover:text-foreground
-	focus:(opacity-100 outline-none ring-1 ring-ring/30)
-	group-hover:opacity-100
-	group-[.destructive]:(text-red-300 hover:text-red-50 focus:(ring-red-400 ring-offset-red-600))
-	`),
-	closeIcon: css(tw`h-4 w-4`),
-	closeText: css(tw`sr-only`),
-	action: css(tw`
-	inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent
-	px-3 text-sm font-medium transition-colors
-	hover:bg-secondary focus:(outline-none ring-1 ring-ring) disabled:(pointer-events-none opacity-50)
-	group-[.destructive]:(
-		border-muted
-		hover:(border-muted/30 bg-destructive text-destructive-foreground)
-		focus:ring-destructive
-	)
-	group-[.primary]:(
-		border-muted
-		hover:(border-muted/30 bg-primary text-primary-foreground)
-		focus:ring-primary
-	)
-	`),
-	toaster: css(
-		tw`absolute top-0 z-50 w-full p-4 pointer-events-none sm:(right-0 bottom-0 top-auto) md:max-w-[420px]`,
-	),
-	toastsWrapper: css(tw`relative flex flex-col-reverse sm:flex-col`),
-	toast: css(tw`pb-2 first-of-type:(absolute inset-0 top-auto) sm:(pt-3 first-of-type:relative)`),
-}
 
 export function Toaster() {
 	const { removeAllToast } = useAction().app
@@ -78,8 +43,11 @@ export function Toaster() {
 		}
 	}, [removeAllToast])
 	return (
-		<div id="toaster" css={style.toaster}>
-			<div css={style.toastsWrapper}>
+		<div
+			id="toaster"
+			tw="absolute top-0 z-50 w-full p-4 pointer-events-none sm:(right-0 bottom-0 top-auto) md:max-w-[420px]"
+		>
+			<div tw="relative flex flex-col-reverse sm:flex-col">
 				<Toasts />
 			</div>
 		</div>
@@ -88,7 +56,7 @@ export function Toaster() {
 
 function ToastTitle({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.title} {...props}>
+		<div tw="text-sm font-semibold [&+div]:text-xs" {...props}>
 			{children}
 		</div>
 	)
@@ -96,7 +64,7 @@ function ToastTitle({ children, ...props }: PropsWithChildren<HTMLAttributes<HTM
 
 function ToastDescription({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.description} {...props}>
+		<div tw="text-sm opacity-90" {...props}>
 			{children}
 		</div>
 	)
@@ -104,11 +72,18 @@ function ToastDescription({ children, ...props }: PropsWithChildren<HTMLAttribut
 
 function CloseButton({ onClick }: { onClick?(): void }) {
 	return (
-		<button type="button" css={style.closeBtn} onClick={onClick}>
+		<button
+			type="button"
+			tw="absolute right-0.5 top-0.5 rounded-md p-0.5 text-foreground/50 not-mobile:opacity-0 transition-opacity
+		hover:text-foreground
+		focus:(opacity-100 outline-none ring-1 ring-ring/30)
+		group-hover:opacity-100
+		group-[.destructive]:(text-red-300 hover:text-red-50 focus:(ring-red-400 ring-offset-red-600))
+		"
+			onClick={onClick}
+		>
 			<Cross2Icon tw="h-4 w-4" />
-			<span tw="sr-only">
-				<FormattedMessage id="close" />
-			</span>
+			<span tw="sr-only">Close</span>
 		</button>
 	)
 }
@@ -121,7 +96,23 @@ function ToastAction({ children, id }: PropsWithChildren<{ id: string }>) {
 
 	if (!isValidElement(children) || isElement(children, FormattedMessage)) {
 		return (
-			<button type="button" css={style.action} onClick={() => dismissToast(id)}>
+			<button
+				type="button"
+				tw="inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent
+			px-3 text-sm font-medium transition-colors
+			hover:bg-secondary focus:(outline-none ring-1 ring-ring) disabled:(pointer-events-none opacity-50)
+			group-[.destructive]:(
+				border-muted
+				hover:(border-muted/30 bg-destructive text-destructive-foreground)
+				focus:ring-destructive
+			)
+			group-[.primary]:(
+				border-muted
+				hover:(border-muted/30 bg-primary text-primary-foreground)
+				focus:ring-primary
+			)"
+				onClick={() => dismissToast(id)}
+			>
 				{children}
 			</button>
 		)
@@ -174,7 +165,7 @@ function Toasts() {
 	return transitions((s, item) => (
 		<animated.div tw="relative" style={s}>
 			<div
-				css={style.toast}
+				tw="pb-2 first-of-type:(absolute inset-0 top-auto) sm:(pt-3 first-of-type:relative)"
 				className={cx("group", item.variant)}
 				ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}
 			>

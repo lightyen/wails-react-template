@@ -1,4 +1,3 @@
-import { css } from "@emotion/react"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { animated, easings, useSpringRef, useTransition } from "@react-spring/web"
 import {
@@ -17,37 +16,26 @@ import {
 	type ReactNode,
 } from "react"
 import { FormattedMessage } from "react-intl"
-import { tw } from "twobj"
+import { tx } from "twobj"
 import { Button, type ButtonProps } from "./button"
 import { useDialog, type DialogProps } from "./dialog"
 import { isElement, zs } from "./lib"
 import { dialogContext } from "./lib/dialogContext"
 import { Overlay } from "./overlay"
 
-export const sheetVariants = zs(css(tw`absolute gap-4 bg-background p-6 shadow-lg`), {
+export const sheetVariants = zs(tx`absolute gap-4 bg-background p-6 shadow-lg`, {
 	variants: {
 		side: {
-			top: css(tw`inset-x-0 top-0 border-b`),
-			bottom: css(tw`inset-x-0 bottom-0 border-t`),
-			left: css(tw`inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm`),
-			right: css(tw`inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm`),
+			top: tx`inset-x-0 top-0 border-b`,
+			bottom: tx`inset-x-0 bottom-0 border-t`,
+			left: tx`inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm`,
+			right: tx`inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm`,
 		},
 	},
 	defaultVariants: {
 		side: "right",
 	},
 })
-
-const style = {
-	header: css(tw`flex flex-col space-y-2 text-center sm:text-left`),
-	title: css(tw`text-lg font-semibold text-foreground`),
-	description: css(tw`text-sm text-muted-foreground`),
-	footer: css(tw`flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2`),
-	closeBtn: css(tw`absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
-	hover:opacity-100
-	focus:(outline-none ring-2 ring-ring ring-offset-2)
-	disabled:pointer-events-none`),
-}
 
 function animationVariants(side: "top" | "right" | "bottom" | "left") {
 	const visible = { transform: "translateX(0%) translateY(0%)" }
@@ -110,7 +98,13 @@ export function SheetTrigger({ children, ...props }: PropsWithChildren<Omit<Butt
 function CloseButton() {
 	return (
 		<SheetClose>
-			<button type="button" css={style.closeBtn}>
+			<button
+				type="button"
+				tw="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
+	hover:opacity-100
+	focus:(outline-none ring-2 ring-ring ring-offset-2)
+	disabled:pointer-events-none"
+			>
 				<Cross2Icon tw="h-4 w-4" />
 				<span tw="sr-only">
 					<FormattedMessage id="close" />
@@ -224,7 +218,7 @@ export function SheetClose({
 
 export function SheetHeader({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.header} {...props}>
+		<div tw="flex flex-col space-y-2 text-center sm:text-left" {...props}>
 			{children}
 		</div>
 	)
@@ -232,7 +226,7 @@ export function SheetHeader({ children, ...props }: PropsWithChildren<HTMLAttrib
 
 export function SheetTitle({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.title} {...props}>
+		<div tw="text-lg font-semibold text-foreground" {...props}>
 			{children}
 		</div>
 	)
@@ -240,7 +234,7 @@ export function SheetTitle({ children, ...props }: PropsWithChildren<HTMLAttribu
 
 export function SheetDescription({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.description} {...props}>
+		<div tw="text-sm text-muted-foreground" {...props}>
 			{children}
 		</div>
 	)
@@ -248,7 +242,7 @@ export function SheetDescription({ children, ...props }: PropsWithChildren<HTMLA
 
 export function SheetFooter({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div css={style.footer} {...props}>
+		<div tw="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2" {...props}>
 			{children}
 		</div>
 	)

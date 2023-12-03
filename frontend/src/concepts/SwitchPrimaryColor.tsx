@@ -1,7 +1,6 @@
 import { Button } from "@components/button"
 import { Command, CommandItem, CommandList } from "@components/command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@components/popover"
-import { tw } from "twobj"
 import { setTheme } from "./theme"
 
 import { useState } from "react"
@@ -14,8 +13,6 @@ function ColorIcon() {
 		</div>
 	)
 }
-
-const circleStyle = tw`flex items-center gap-2`
 
 interface PrimaryColor {
 	light: string
@@ -105,7 +102,8 @@ export function SwitchPrimaryColor() {
 							{Object.entries(primaryColors).map(([color, p]) => (
 								<CommandItem
 									key={color}
-									css={[circleStyle, variables(p)]}
+									tw="flex items-center gap-2"
+									css={variables(p)}
 									onSelect={() => {
 										localStorage.setItem("theme.color", color)
 										setTheme({ color })

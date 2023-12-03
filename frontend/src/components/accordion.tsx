@@ -14,19 +14,8 @@ import {
 	useRef,
 	useState,
 } from "react"
-import { tw } from "twobj"
+import { tx } from "twobj"
 import { getElementHeight, isElement } from "./lib"
-
-const style = {
-	item: css(tw`relative z-10 border-b`),
-	trigger: css(tw`px-1
-		w-full flex items-center justify-between py-4 text-sm font-medium hover:underline
-		[&[data-state=open] + div]:h-[var(--accordion-content-height)]
-		[& > svg]:(duration-200 h-4 w-4 text-muted-foreground)
-		[&[data-state=open] > svg]:rotate-180
-	`),
-	content: css(tw`px-1 transition-[height] overflow-hidden h-0 text-sm [& > div]:(bg-background pb-4)`),
-}
 
 interface IndexProp {
 	index?: number
@@ -131,12 +120,12 @@ export function AccordionItem({ children, index = -1, position = "relative" }: P
 	return (
 		<section
 			ref={ref}
+			tw="relative z-10 border-b"
 			css={[
-				style.item,
 				css`
 					z-index: ${items.length - index};
 				`,
-				position === "absolute" && tw`h-[var(--accordion-item-height)]`,
+				position === "absolute" && tx`h-[var(--accordion-item-height)]`,
 			]}
 		>
 			{trigger}
@@ -152,7 +141,12 @@ export function AccordionTrigger({ index = -1, children }: PropsWithChildren<Acc
 	return (
 		<button
 			type="button"
-			css={style.trigger}
+			tw="px-1
+				w-full flex items-center justify-between py-4 text-sm font-medium hover:underline
+				[&[data-state=open] + div]:h-[var(--accordion-content-height)]
+				[& > svg]:(duration-200 h-4 w-4 text-muted-foreground)
+				[&[data-state=open] > svg]:rotate-180
+			"
 			data-state={items[index].open ? "open" : "closed"}
 			onClick={() => {
 				toggle(index)
@@ -173,7 +167,7 @@ export function AccordionContent({ children, ...props }: PropsWithChildren) {
 		}
 	}, [])
 	return (
-		<div ref={ref} css={style.content}>
+		<div ref={ref} tw="px-1 transition-[height] overflow-hidden h-0 text-sm [& > div]:(bg-background pb-4)">
 			<div {...props}>{children}</div>
 		</div>
 	)

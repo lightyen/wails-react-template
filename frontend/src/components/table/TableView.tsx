@@ -1,12 +1,11 @@
 import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from "@radix-ui/react-icons"
-import { ForwardedRef, forwardRef, memo, type PropsWithChildren, type TableHTMLAttributes } from "react"
+import { forwardRef, memo, type ForwardedRef, type PropsWithChildren, type TableHTMLAttributes } from "react"
 import { Button } from "../button"
 import { Command, CommandItem, CommandList } from "../command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
 import type { TableViewFeature } from "./feature"
 import type { Label, SortType } from "./model"
 import type { GlobalCheckboxContext } from "./reducer"
-import { style } from "./style"
 
 function SortButton({
 	sortType,
@@ -19,11 +18,11 @@ function SortButton({
 				<Button variant="ghost" size="sm" tw="relative -ml-3 h-8">
 					{children}
 					{sortType === "desc" ? (
-						<ArrowDownIcon css={style.sortIcon} />
+						<ArrowDownIcon tw="ml-2 h-4 w-4" />
 					) : sortType === "asc" ? (
-						<ArrowUpIcon css={style.sortIcon} />
+						<ArrowUpIcon tw="ml-2 h-4 w-4" />
 					) : (
-						<CaretSortIcon css={style.sortIcon} />
+						<CaretSortIcon tw="ml-2 h-4 w-4" />
 					)}
 				</Button>
 			</PopoverTrigger>
@@ -31,15 +30,15 @@ function SortButton({
 				<Command tw="w-32 p-1">
 					<PopoverClose>
 						<CommandList>
-							<CommandItem onSelect={() => onSort?.("")} css={style.pagination.sortItem}>
+							<CommandItem onSelect={() => onSort?.("")} tw="flex gap-2">
 								<CaretSortIcon />
 								<span tw="pointer-events-none capitalize">Default</span>
 							</CommandItem>
-							<CommandItem onSelect={() => onSort?.("asc")} css={style.pagination.sortItem}>
+							<CommandItem onSelect={() => onSort?.("asc")} tw="flex gap-2">
 								<ArrowUpIcon />
 								<span tw="pointer-events-none capitalize">Asc</span>
 							</CommandItem>
-							<CommandItem onSelect={() => onSort?.("desc")} css={style.pagination.sortItem}>
+							<CommandItem onSelect={() => onSort?.("desc")} tw="flex gap-2">
 								<ArrowDownIcon />
 								<span tw="pointer-events-none capitalize">Desc</span>
 							</CommandItem>
@@ -57,9 +56,9 @@ const TableWrapper = memo(
 		ref: ForwardedRef<HTMLTableElement>,
 	) {
 		return (
-			<div aria-label="table-view" css={style.tableBorder}>
-				<div css={style.tableWrapper}>
-					<table ref={ref} css={style.table} {...props}>
+			<div aria-label="table-view" tw="rounded-md border overflow-x-auto">
+				<div tw="relative w-full">
+					<table ref={ref} tw="w-full caption-bottom text-sm whitespace-nowrap" {...props}>
 						{children}
 					</table>
 				</div>
@@ -96,11 +95,16 @@ export function TableView<TData extends {}>({
 	return (
 		<TableWrapper {...props}>
 			{hasHeader && (
-				<thead css={style.thead}>
-					<tr css={style.tr}>
+				<thead tw="[& tr]:border-b">
+					<tr tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted">
 						{columns.map(({ label, compare, sortType, sort, className, style: _style }, i) => {
 							return (
-								<th css={[style.th, _style]} className={className} key={i}>
+								<th
+									tw="h-10 px-2 first-of-type:pl-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-2"
+									css={_style}
+									className={className}
+									key={i}
+								>
 									{compare ? (
 										<SortButton sortType={sortType} onSort={sort}>
 											{thLabel(label)}
@@ -114,22 +118,35 @@ export function TableView<TData extends {}>({
 					</tr>
 				</thead>
 			)}
-			<tbody css={style.tbody}>
+			<tbody tw="[& tr:last-of-type]:border-0">
 				{result.map((row, rowIndex) => {
 					const context = checkbox.items[row._Index]
 					return row ? (
-						<tr css={style.tr} key={rowIndex} data-state={context.checked ? "selected" : undefined}>
+						<tr
+							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
+							key={rowIndex}
+							data-state={context.checked ? "selected" : undefined}
+						>
 							{columns.map(({ Component, id }, colIndex) => {
 								return (
-									<td css={style.td} key={colIndex}>
+									<td
+										tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
+										key={colIndex}
+									>
 										{Component ? <Component row={row} {...context} /> : id && row[id]}
 									</td>
 								)
 							})}
 						</tr>
 					) : (
-						<tr css={style.tr} key={rowIndex}>
-							<td css={style.td} colSpan={columns.length}>
+						<tr
+							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
+							key={rowIndex}
+						>
+							<td
+								tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
+								colSpan={columns.length}
+							>
 								&nbsp;
 							</td>
 						</tr>
@@ -137,8 +154,14 @@ export function TableView<TData extends {}>({
 				})}
 				{limit &&
 					Array.from(Array((limit - (result.length % limit)) % limit)).map((_, i) => (
-						<tr css={style.tr} key={i}>
-							<td css={style.td} colSpan={columns.length}>
+						<tr
+							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
+							key={i}
+						>
+							<td
+								tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
+								colSpan={columns.length}
+							>
 								&nbsp;
 							</td>
 						</tr>

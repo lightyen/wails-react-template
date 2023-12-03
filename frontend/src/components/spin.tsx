@@ -1,6 +1,5 @@
 import { css, keyframes } from "@emotion/react"
 import { SVGAttributes, useMemo } from "react"
-import { tw } from "twobj"
 
 const spin = keyframes`
 from {
@@ -82,13 +81,11 @@ export function SpinArcLoading({ radius = 8, strokeWidth = 3, ...props }: SpinAr
 	)
 }
 
-const loader = css(tw`
-	rounded-full after:(rounded-full w-full h-full)
-	aspect-square
-	border-muted border-l-primary/75
-	animate-spin
-`)
-
 export function CircleLoading({ ...props }: {}) {
-	return <div css={loader} {...props} />
+	return (
+		<div
+			tw="rounded-full after:(rounded-full w-full h-full) aspect-square border-muted border-l-primary/75 animate-spin"
+			{...props}
+		/>
+	)
 }
