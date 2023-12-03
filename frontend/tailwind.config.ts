@@ -88,7 +88,7 @@ export default {
 			},
 			keyframes: {
 				enter: {
-					from: { opacity: "0" },
+					from: { opacity: "0.1" },
 					to: { opacity: "var(--enter-opacity, 1)" },
 				},
 			},
