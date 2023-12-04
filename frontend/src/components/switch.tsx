@@ -1,18 +1,18 @@
 import { css } from "@emotion/react"
 import { forwardRef, useId, useRef, type InputHTMLAttributes } from "react"
-import { tw, tx } from "twobj"
+import { tw } from "twobj"
 
 const InputControl = tw.input`hidden`
 
 const effects = css`
 	${InputControl}:disabled + & {
-		${tx`cursor-not-allowed opacity-50`}
+		${tw`cursor-not-allowed opacity-50`}
 	}
 	${InputControl}:checked + & {
-		${tx`bg-primary`}
+		${tw`bg-primary`}
 	}
 	${InputControl}:checked + &::after {
-		${tx`translate-x-4`}
+		${tw`translate-x-4`}
 	}
 `
 

@@ -14,7 +14,7 @@ import {
 	useRef,
 	useState,
 } from "react"
-import { tx } from "twobj"
+import { tw } from "twobj"
 import { getElementHeight, isElement } from "./lib"
 
 interface IndexProp {
@@ -125,7 +125,7 @@ export function AccordionItem({ children, index = -1, position = "relative" }: P
 				css`
 					z-index: ${items.length - index};
 				`,
-				position === "absolute" && tx`h-[var(--accordion-item-height)]`,
+				position === "absolute" && tw`h-[var(--accordion-item-height)]`,
 			]}
 		>
 			{trigger}

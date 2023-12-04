@@ -24,52 +24,6 @@ export type InnerVariantProps<T extends Variants<S>, S> = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VariantProps<Fn extends (...args: any) => CSSObject | SerializedStyles[]> = Parameters<Fn>[0]
 
-function isObject(value: unknown): value is Record<string, unknown> {
-	return typeof value === "object" && value !== null
-}
-
-function merge(target: Record<string, unknown>, ...sources: unknown[]): Record<string, unknown> {
-	const source = sources.shift()
-	if (source == undefined) return target
-
-	if (isObject(target) && isObject(source)) {
-		for (const key in source) {
-			const dist = target[key]
-			const src = source[key]
-
-			if (isObject(src)) {
-				if (isObject(dist)) {
-					merge(dist, src)
-				} else {
-					target[key] = Object.assign({}, src)
-				}
-				continue
-			}
-			target[key] = src
-		}
-	}
-	return merge(target, ...sources)
-}
-
-export function zx<V extends Variants<S>, S extends CSSObject = CSSObject>(base: S | null | undefined, variants: V) {
-	return (props: InnerVariantProps<V, S>): S => {
-		let s: S = {} as S
-		if (base) {
-			s = Object.assign({}, base)
-		}
-		for (const t in variants.variants) {
-			const value = (props[t] as string) ?? variants.defaultVariants[t]
-			if (value != null) {
-				const styles = variants.variants[t]?.[value]
-				if (styles) {
-					merge(s, styles)
-				}
-			}
-		}
-		return s
-	}
-}
-
 export function zs<V extends Variants<S>, S extends SerializedStyles = SerializedStyles>(base: S, variants: V) {
 	return (props: InnerVariantProps<V, S>): S[] => {
 		const s: S[] = [base]

@@ -18,7 +18,7 @@
     "@types/react-router-dom": "5.3.3",
     "@use-gesture/react": "10.3.0",
     "axios": "1.6.2",
-    "babel-plugin-twobj": "2.3.0",
+    "babel-plugin-twobj": "2.4.0",
     "clsx": "2.0.0",
     "cmdk": "0.2.0",
     "dayjs": "1.11.10",
@@ -29,7 +29,7 @@
     "react-router-dom": "6.20.1",
     "redux": "4.2.1",
     "redux-saga": "1.2.3",
-    "twobj": "2.5.5",
+    "twobj": "2.5.6",
     "zod": "3.22.4"
   },
   "devDependencies": {

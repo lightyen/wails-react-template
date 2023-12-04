@@ -16,7 +16,7 @@ import {
 	type ReactNode,
 } from "react"
 import { FormattedMessage } from "react-intl"
-import { tx } from "twobj"
+import { tw } from "twobj"
 import { Button, type ButtonProps } from "./button"
 import { isElement } from "./lib"
 import { dialogContext } from "./lib/dialogContext"
@@ -130,7 +130,7 @@ export function DialogContent({
 					tw="absolute left-[50%] top-[50%] shadow-lg origin-center sm:(rounded-lg w-full)"
 					css={
 						layout === true &&
-						tx`grid gap-4 border bg-background p-6 w-full max-w-lg sm:max-w-[var(--dialog-width)]`
+						tw`grid gap-4 border bg-background p-6 w-full max-w-lg sm:max-w-[var(--dialog-width)]`
 					}
 					onPointerDown={event => {
 						event.stopPropagation()

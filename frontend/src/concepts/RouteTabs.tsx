@@ -2,16 +2,16 @@ import { isElement } from "@components/lib"
 import { css } from "@emotion/react"
 import { Children, useEffect, useId, useState, type ReactElement } from "react"
 import { type NavigateFunction } from "react-router-dom"
-import { tw, tx } from "twobj"
+import { tw } from "twobj"
 
 const InputControl = tw.input`hidden`
 
 const effects = css`
 	${InputControl}:checked + & {
-		${tx`text-foreground`}
+		${tw`text-foreground`}
 	}
 	${InputControl}:checked + &::after {
-		${tx`bg-primary translate-y-px scale-100 opacity-100`}
+		${tw`bg-primary translate-y-px scale-100 opacity-100`}
 	}
 `
 

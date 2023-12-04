@@ -13,20 +13,20 @@ import {
 	type ReactElement,
 } from "react"
 import { FormattedMessage } from "react-intl"
-import { tx } from "twobj"
+import { tw } from "twobj"
 import { isElement, zs } from "./lib"
 
 const toastVariants = zs(
-	tx`pointer-events-auto touch-none transition-colors
+	tw`pointer-events-auto touch-none transition-colors
 	relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md border
 	p-4 pr-6 shadow-lg
 	`,
 	{
 		variants: {
 			variant: {
-				default: tx`border bg-background text-foreground`,
-				destructive: tx`border-destructive bg-destructive text-destructive-foreground`,
-				primary: tx`bg-background border-primary`,
+				default: tw`border bg-background text-foreground`,
+				destructive: tw`border-destructive bg-destructive text-destructive-foreground`,
+				primary: tw`bg-background border-primary`,
 			},
 		},
 		defaultVariants: {

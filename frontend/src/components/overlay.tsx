@@ -8,7 +8,7 @@ import {
 import { animated, useSpringRef, useTransition } from "@react-spring/web"
 import { useEffect, useLayoutEffect, useRef, useState, type HTMLAttributes, type PropsWithChildren } from "react"
 import { createPortal } from "react-dom"
-import { tx } from "twobj"
+import { tw } from "twobj"
 
 interface OverlayProps extends HTMLAttributes<HTMLDivElement> {
 	visible: boolean
@@ -78,7 +78,7 @@ export function Overlay({
 						<animated.div
 							data-type="overlay"
 							tw="fixed inset-0 top-[calc(var(--control-ratio) * 30px)] z-50 bg-background/75 [:nth-last-of-type(-n+2)]:pointer-events-auto"
-							css={blur && tx`backdrop-blur-sm`}
+							css={blur && tw`backdrop-blur-sm`}
 							style={s}
 							onPointerDown={event => {
 								onPointerDown?.(event)
