@@ -31,13 +31,11 @@ import { CircleLoading } from "@components/spin"
 import { Switch } from "@components/switch"
 import { RouteTab, RouterTabs } from "@concepts/RouteTabs"
 import { useToast } from "@context"
-import { zodResolver } from "@hookform/resolvers/zod"
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { FormattedMessage, useIntl } from "react-intl"
+import { FormattedMessage } from "react-intl"
 import { Outlet, Route, useNavigate } from "react-router-dom"
-import * as z from "zod"
+import { FormComponent } from "./FormComponent"
 
 export const ComponentRoutes = (
 	<Route path="components" Component={Components}>
@@ -165,49 +163,6 @@ function AccordionComponent() {
 						</AccordionItem>
 					</Accordion>
 				</div>
-			</div>
-		</div>
-	)
-}
-
-function FormComponent() {
-	const intl = useIntl()
-
-	const schema = z.object({
-		myvalue: z.string().ip({ version: "v4", message: intl.formatMessage({ id: "invalid_message_000" }) }),
-		val: z.string().refine(
-			val => {
-				const myvalue = getValues("myvalue")
-				console.log(myvalue)
-				return typeof val === "string" ? /^\d+px$/.test(val) : false
-			},
-			{ message: "not pixel value" },
-		),
-	})
-
-	const {
-		register,
-		getValues,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) })
-
-	return (
-		<div tw="py-7 flex flex-col gap-7">
-			<div tw="max-w-xl">
-				<h1 tw="font-bold text-lg mb-4">Form</h1>
-				<form
-					tw="grid gap-4 max-w-[600px]"
-					onSubmit={handleSubmit(_data => {
-						console.log("Form is valid.")
-					})}
-				>
-					<Input placeholder="ipv4" aria-invalid={!!errors.myvalue} {...register("myvalue")} />
-					{errors.myvalue && <div>{errors.myvalue.message}</div>}
-					<Input placeholder="val" aria-invalid={!!errors.val} {...register("val")} />
-					{errors.val && <div>{errors.val.message}</div>}
-					<Button type="submit">Apply</Button>
-				</form>
 			</div>
 		</div>
 	)

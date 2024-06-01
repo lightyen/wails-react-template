@@ -6,12 +6,23 @@ import {
 	DoubleArrowLeftIcon,
 	DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
+import { useMemo } from "react"
+import { useTableStore } from "."
 import { Button } from "../button"
 import { Command, CommandItem, CommandList } from "../command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
-import { PaginationFeature } from "./feature"
 
-function SwitchLimit({ limitOptions, limit, setLimit }: PaginationFeature) {
+interface PaginationItem {
+	type: "first" | "last" | "prev" | "next"
+	onClick?: React.MouseEventHandler
+	disabled: boolean
+}
+
+function SwitchLimit() {
+	const useSelect = useTableStore()
+	const limit = useSelect(state => state.pagination.limit)
+	const limitOptions = useSelect(state => state.pagination.limitOptions)
+	const setLimit = useSelect(state => state.setLimit)
 	return (
 		<div tw="ml-auto flex items-center gap-x-2">
 			<span tw="hidden lg:inline">Rows per page</span>
@@ -47,8 +58,40 @@ function SwitchLimit({ limitOptions, limit, setLimit }: PaginationFeature) {
 	)
 }
 
-export function TablePagination(props: PaginationFeature) {
-	const { current, total, items, limit, first, last, prev, next } = props
+export function TablePagination() {
+	const useSelect = useTableStore()
+	const total = useSelect(state => state.filtered.length)
+	const { pageIndex, limit, notNext, notPrev } = useSelect(state => state.pagination)
+	const first = useSelect(state => state.first)
+	const last = useSelect(state => state.last)
+	const prev = useSelect(state => state.prev)
+	const next = useSelect(state => state.next)
+
+	const items = useMemo<PaginationItem[]>(() => {
+		const items: PaginationItem[] = []
+		items.push({
+			type: "first",
+			disabled: notPrev,
+			onClick: first,
+		})
+		items.push({
+			type: "prev",
+			disabled: notPrev,
+			onClick: prev,
+		})
+		items.push({
+			type: "next",
+			disabled: notNext,
+			onClick: next,
+		})
+		items.push({
+			type: "last",
+			disabled: notNext,
+			onClick: last,
+		})
+		return items
+	}, [notNext, notPrev, prev, next, first, last])
+
 	return (
 		<div
 			aria-label="table-pagination"
@@ -56,11 +99,11 @@ export function TablePagination(props: PaginationFeature) {
 		>
 			<div tw="text-sm">
 				<span tw="hidden sm:inline">Count: </span>
-				{props.total}
+				{total}
 			</div>
-			<SwitchLimit {...props} />
+			<SwitchLimit />
 			<div tw="flex w-[100px] items-center justify-center text-sm font-medium">
-				Page {current + 1} of {Math.ceil(total / limit)}
+				Page {pageIndex + 1} of {Math.ceil(total / limit)}
 			</div>
 			<div tw="flex items-center gap-x-2 select-none">
 				{items.map((item, i) => {
@@ -83,6 +126,7 @@ export function TablePagination(props: PaginationFeature) {
 								<Button
 									key={i}
 									onClick={prev}
+									aria-label="previous page"
 									variant="outline"
 									tw="h-8 w-8 p-0"
 									disabled={item.disabled}
@@ -96,6 +140,7 @@ export function TablePagination(props: PaginationFeature) {
 								<Button
 									key={i}
 									onClick={next}
+									aria-label="next page"
 									variant="outline"
 									tw="h-8 w-8 p-0"
 									disabled={item.disabled}

@@ -1,9 +1,24 @@
 import { Checkbox } from "@components/checkbox"
-import { TablePagination, TableToolbar, TableView, useTableData } from "@components/table"
-import { data } from "./data"
+import { Provider, TablePagination, TableToolbar, TableView, useTable } from "@components/table"
+import { useEffect, useState } from "react"
+import { MockRecord, data } from "./data"
 
-export function Table() {
-	const { toolbarContext, viewContext, paginationContext } = useTableData(data, {
+export function TablePage() {
+	// API like
+	const [source, setSource] = useState<MockRecord[]>(data)
+	// useEffect(() => {
+	// 	setSource(data)
+	// }, [source])
+
+	// useEffect(() => {
+	// 	setTimeout(() => {
+	// 		setSource([])
+	// 	}, 5000)
+	// }, [])
+
+	const store = useTable({
+		source,
+		// persistedId: "table01",
 		columns: [
 			{
 				id: "checkbox",
@@ -34,7 +49,7 @@ export function Table() {
 					{ label: "France", filter: v => v.country === "France" },
 				],
 			},
-			{ id: "region", label: "Region", defaultSelected: false },
+			{ id: "region", label: "Region", selected: false },
 			{
 				id: "currency",
 				label: "Currency",
@@ -50,22 +65,31 @@ export function Table() {
 			{
 				id: "alphanumeric",
 				label: "Alphanumeric",
-				defaultSelected: false,
+				selected: false,
 				compare: (a, b) => a.alphanumeric.localeCompare(b.alphanumeric),
 			},
 			{
 				id: "text",
 				label: "Text",
-				defaultSelected: false,
+				selected: false,
 				filter: (record, value, search) => search(record.text, value),
 			},
 		],
 	})
+
+	const reset = store(state => state.reset)
+
+	useEffect(() => {
+		reset(source)
+	}, [reset, source])
+
 	return (
 		<div tw="px-5 max-w-3xl lg:max-w-max mx-auto grid gap-4">
-			<TableToolbar {...toolbarContext} />
-			<TableView {...viewContext} />
-			<TablePagination {...paginationContext} />
+			<Provider store={store}>
+				<TableToolbar />
+				<TableView />
+				<TablePagination />
+			</Provider>
 		</div>
 	)
 }

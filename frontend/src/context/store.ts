@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore, Tuple } from "@reduxjs/toolkit"
 import createSagaMiddleware from "redux-saga"
 import { app, type AppStore } from "./app/reducer"
 import { data, type DataStore } from "./data/reducer"
@@ -13,7 +13,7 @@ interface RootStoreType {
 
 export type RootStore = Readonly<RootStoreType>
 
-export function makeStore() {
+export function createStore() {
 	const sagaMiddleware = createSagaMiddleware()
 	const store = configureStore({
 		reducer: {
@@ -21,13 +21,12 @@ export function makeStore() {
 			data,
 			intl,
 		},
-		middleware: [sagaMiddleware],
+		middleware: () => new Tuple(sagaMiddleware),
 		devTools: import.meta.env.MODE === "development" ? { name: "frontend" } : false,
 	})
 
 	sagaMiddleware.run(rootSaga)
-
 	return store
 }
 
-export const store = makeStore()
+export const store = createStore()

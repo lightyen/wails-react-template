@@ -2,7 +2,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    "source.organizeImports": "explicit"
   },
   "editor.snippetSuggestions": "none",
   "emmet.excludeLanguages": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
@@ -32,6 +32,9 @@
     "**/build": true
   },
   "javascript.suggestionActions.enabled": false,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

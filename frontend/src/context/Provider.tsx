@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react"
+import { type PropsWithChildren } from "react"
 import { IntlProvider } from "react-intl"
 import { Provider as ReactReduxProvider } from "react-redux"
 import { AppStoreContext, useSelect } from "./hooks"

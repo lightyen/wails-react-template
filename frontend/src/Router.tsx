@@ -3,8 +3,8 @@ import { Layout } from "./layout"
 import { ComponentRoutes, Components } from "./pages/Components"
 import { Home } from "./pages/Home"
 import { NotFound } from "./pages/NotFound"
-import { Table } from "./pages/Table"
-import { Todolist } from "./pages/Todolist"
+import { TablePage } from "./pages/Table"
+import { TodoList } from "./pages/Todolist"
 
 const root = "/"
 
@@ -15,8 +15,8 @@ export const router = createBrowserRouter(
 			<Route path="*" Component={NotFound} />
 			<Route path="components" Component={Components} />
 			{ComponentRoutes}
-			<Route path="table" Component={Table} />
-			<Route path="todolist" Component={Todolist} />
+			<Route path="table" Component={TablePage} />
+			<Route path="todolist" Component={TodoList} />
 		</Route>,
 	),
 )

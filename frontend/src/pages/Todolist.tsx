@@ -1,88 +1,65 @@
 import { Button } from "@components/button"
+import { FormArrayProvider, useFormArrayContext } from "@components/form/context"
+import { isNormalIPv4 } from "@components/form/validate"
 import { Input } from "@components/input"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 import { animated, easings, useSpringRef, useTransition } from "@react-spring/web"
 import { useEffect, useRef } from "react"
-import { FieldArrayWithId, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form"
+import { FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form"
 import { FormattedMessage, useIntl } from "react-intl"
-import * as z from "zod"
 
 interface TodolistFormData {
 	list: { value: string }[]
 }
 
-export function Todolist() {
-	const intl = useIntl()
-	const schema = z.object({
-		list: z.array(
-			z.object({
-				value: z.string().ip({ version: "v4", message: intl.formatMessage({ id: "invalid_message_000" }) }),
-			}),
-		),
-	})
-
-	const methods = useForm<TodolistFormData>({ resolver: zodResolver(schema), defaultValues: { list: [] } })
-	const { fields, append, remove } = useFieldArray({
+export function TodoList() {
+	const methods = useForm<TodolistFormData>({ defaultValues: { list: [] } })
+	const fieldArrayMethods = useFieldArray({
 		control: methods.control,
 		name: "list",
 	})
 
 	return (
-		<article tw="relative">
-			<div tw="max-w-lg">
-				<form
-					tw="p-5"
-					onSubmit={methods.handleSubmit(data => {
-						console.log(data)
-					})}
+		<form
+			tw="p-5"
+			onSubmit={methods.handleSubmit(data => {
+				console.log(data)
+			})}
+		>
+			<div tw="flex items-center gap-6">
+				<span tw="text-xl">Todolist</span>
+				<Button
+					onClick={() => {
+						fieldArrayMethods.append({ value: "" })
+					}}
 				>
-					<div tw="flex items-center gap-6">
-						<span tw="text-xl">Todolist</span>
-						<Button
-							onClick={() => {
-								append({ value: "" })
-							}}
-						>
-							<PlusIcon />
-							<FormattedMessage id="add" />
-						</Button>
-					</div>
-					<div tw="my-4">
-						<div tw="p-3 rounded-lg -mb-2">
-							<FormProvider {...methods}>
-								<TodolistAnimated
-									fields={fields}
-									remove={(id: string) => {
-										const i = fields.findIndex(v => v.id === id)
-										if (i >= 0) {
-											remove(i)
-										}
-									}}
-								/>
-							</FormProvider>
-							<Button type="submit" tw="w-full">
-								<FormattedMessage id="apply" />
-							</Button>
-						</div>
-					</div>
-				</form>
+					<PlusIcon />
+					<FormattedMessage id="add" />
+				</Button>
 			</div>
-		</article>
+			<div tw="my-4">
+				<div tw="p-3 rounded-lg -mb-2">
+					<FormProvider {...methods}>
+						<FormArrayProvider {...fieldArrayMethods}>
+							<TodolistAnimated />
+						</FormArrayProvider>
+					</FormProvider>
+					<Button type="submit" tw="w-full">
+						<FormattedMessage id="apply" />
+					</Button>
+				</div>
+			</div>
+		</form>
 	)
 }
 
-function TodolistAnimated({
-	fields,
-	remove,
-}: {
-	fields: FieldArrayWithId<TodolistFormData, "list", "id">[]
-	remove(id: string): void
-}) {
+function TodolistAnimated() {
 	const {
 		register,
 		formState: { errors },
 	} = useFormContext<TodolistFormData>()
+	const intl = useIntl()
+	const { fields, remove } = useFormArrayContext<TodolistFormData>()
 
 	const heightMap = useRef<Record<string, number>>({})
 
@@ -126,19 +103,21 @@ function TodolistAnimated({
 						}
 					}}
 				>
-					<div tw="flex gap-4 items-center">
+					<div tw="flex gap-4">
 						<Input
 							defaultValue={item.value}
 							aria-invalid={errors.list?.[i]?.value != null}
-							{...register(`list.${i}.value`)}
+							{...register(`list.${i}.value`, {
+								validate: value => {
+									if (isNormalIPv4(value, true)) {
+										return
+									}
+
+									return intl.formatMessage({ id: "invalid_message_000" })
+								},
+							})}
 						/>
-						<Button
-							variant="outline"
-							size="icon"
-							onClick={() => {
-								remove(item.id)
-							}}
-						>
+						<Button variant="outline" size="icon" onClick={() => remove(i)}>
 							<TrashIcon />
 						</Button>
 					</div>

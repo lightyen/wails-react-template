@@ -1,11 +1,10 @@
 import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from "@radix-ui/react-icons"
 import { forwardRef, memo, type ForwardedRef, type PropsWithChildren, type TableHTMLAttributes } from "react"
+import { useTableStore } from "."
 import { Button } from "../button"
 import { Command, CommandItem, CommandList } from "../command"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
-import type { TableViewFeature } from "./feature"
-import type { Label, SortType } from "./model"
-import type { GlobalCheckboxContext } from "./reducer"
+import type { Label, SortType, TableColumnItem, WithIndex } from "./context/model"
 
 function SortButton({
 	sortType,
@@ -67,105 +66,134 @@ const TableWrapper = memo(
 	}),
 )
 
-function thLabel(Label: Label, context?: GlobalCheckboxContext) {
+function ThLabel({ Label }: { Label: Label }) {
+	const useSelect = useTableStore()
+	const checked = useSelect(state => state.global.checked)
+	const intermediate = useSelect(state => state.global.intermediate)
+	const globalCheckbox = useSelect(state => state.globalCheckbox)
 	if (typeof Label === "string") {
 		return Label
 	}
-	if (typeof Label === "function") {
-		if (context) {
-			return <Label {...context} />
-		}
-		return null
+	if (typeof Label !== "function") {
+		return Label
 	}
-	return Label
+	return <Label checked={checked} intermediate={intermediate} onChecked={checked => globalCheckbox(checked)} />
 }
 
-export function TableView<TData extends {}>({
-	result,
-	columns,
-	limit,
-	checkbox,
-	pageIndex,
-	children,
-	...props
-}: PropsWithChildren<TableViewFeature<TData> & TableHTMLAttributes<HTMLTableElement>>) {
-	columns = columns.filter(c => c.selected)
-	const hasHeader = columns.some(c => c.label)
+function Row<T>({ data, columns }: { data: WithIndex<T>; columns: TableColumnItem<T>[] }) {
+	const useSelect = useTableStore()
+	const checked = useSelect(state => state.items[data.dataIndex].checked)
+	const checkbox = useSelect(state => state.checkbox)
+	return (
+		<tr
+			tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
+			data-state={checked ? "selected" : undefined}
+		>
+			{columns.map(({ Component, id, selected }, colIndex) => {
+				if (!selected) {
+					return null
+				}
+				return (
+					<td tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2" key={colIndex}>
+						{Component ? (
+							<Component
+								record={data}
+								checked={checked}
+								onChecked={checked => checkbox(checked, data.dataIndex)}
+							/>
+						) : (
+							id && data[id]
+						)}
+					</td>
+				)
+			})}
+		</tr>
+	)
+}
 
+interface Props<T> {
+	keyFn?: (record: T) => React.Key
+}
+
+export function TableView<T extends {} = {}>({
+	children,
+	keyFn,
+	...props
+}: PropsWithChildren<TableHTMLAttributes<HTMLTableElement> & Props<T>>) {
+	const useSelect = useTableStore()
+	const limit = useSelect(state => state.pagination.limit)
+	const columns = useSelect(state => state.columns)
+	const colSpan = columns.reduce((cnt, column) => (column.selected ? cnt + 1 : cnt), 0)
+	const result = useSelect(state => state.view)
+	const hasHeader = columns.some(c => c.label)
+	const sortColumn = useSelect(state => state.sortColumn)
 	return (
 		<TableWrapper {...props}>
 			{hasHeader && (
 				<thead tw="[& tr]:border-b">
 					<tr tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted">
-						{columns.map(({ label, compare, sortType, sort, className, style: _style }, i) => {
-							return (
-								<th
-									tw="h-10 px-2 first-of-type:pl-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-2"
-									css={_style}
-									className={className}
-									key={i}
-								>
-									{compare ? (
-										<SortButton sortType={sortType} onSort={sort}>
-											{thLabel(label)}
-										</SortButton>
-									) : (
-										thLabel(label, checkbox.global)
-									)}
-								</th>
-							)
-						})}
+						{columns.map(
+							({ selected, label, compare, sortType, className, style: _style }, columnIndex) => {
+								if (!selected) {
+									return null
+								}
+								return (
+									<th
+										key={columnIndex}
+										tw="h-10 px-2 first-of-type:pl-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-2"
+										css={_style}
+										className={className}
+									>
+										{compare ? (
+											<SortButton sortType={sortType} onSort={t => sortColumn(columnIndex, t)}>
+												<ThLabel Label={label} />
+											</SortButton>
+										) : (
+											<ThLabel Label={label} />
+										)}
+									</th>
+								)
+							},
+						)}
 					</tr>
 				</thead>
 			)}
 			<tbody tw="[& tr:last-of-type]:border-0">
-				{result.map((row, rowIndex) => {
-					const context = checkbox.items[row._Index]
-					return row ? (
-						<tr
-							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
-							key={rowIndex}
-							data-state={context.checked ? "selected" : undefined}
-						>
-							{columns.map(({ Component, id }, colIndex) => {
-								return (
-									<td
-										tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
-										key={colIndex}
-									>
-										{Component ? <Component row={row} {...context} /> : id && row[id]}
-									</td>
-								)
-							})}
-						</tr>
+				{result.map((data, i) => {
+					return data ? (
+						<Row key={keyFn ? keyFn(data) ?? i : i} data={data} columns={columns} />
 					) : (
 						<tr
+							key={keyFn ? keyFn(data) ?? i : i}
 							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
-							key={rowIndex}
 						>
 							<td
 								tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
-								colSpan={columns.length}
+								colSpan={colSpan}
 							>
 								&nbsp;
 							</td>
 						</tr>
 					)
 				})}
-				{limit &&
-					Array.from(Array((limit - (result.length % limit)) % limit)).map((_, i) => (
+				{(() => {
+					if (limit === 0) {
+						return null
+					}
+					return Array.from(Array(limit - result.length)).map((_, i) => (
 						<tr
 							tw="border-b transition-colors duration-100 hover:bg-muted/50 data-[state=selected]:bg-muted"
 							key={i}
 						>
 							<td
 								tw="p-2 first-of-type:pl-4 align-middle [&:has([role=checkbox])]:pr-2"
-								colSpan={columns.length}
+								colSpan={colSpan}
 							>
 								&nbsp;
 							</td>
 						</tr>
-					))}
+					))
+				})()}
 			</tbody>
 		</TableWrapper>
 	)

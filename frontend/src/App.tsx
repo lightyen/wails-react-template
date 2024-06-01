@@ -8,9 +8,7 @@ import "./global.css"
 
 const bodyScrollbar = tw`not-mobile:(
 	[::-webkit-scrollbar]:(w-[7px] h-[7px])
-	[::-webkit-scrollbar-thumb]:(
-		bg-foreground/15 hover:bg-foreground/20 bg-clip-content
-	)
+	[::-webkit-scrollbar-thumb]:(bg-foreground/15 hover:bg-foreground/20 bg-clip-content)
 )`
 
 const appStyle = css`

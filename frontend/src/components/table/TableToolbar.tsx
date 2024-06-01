@@ -1,25 +1,22 @@
-import { CheckIcon, Cross2Icon, MixerHorizontalIcon, PlusCircledIcon, ResetIcon } from "@radix-ui/react-icons"
+import { CheckIcon, Cross2Icon, MixerHorizontalIcon, ResetIcon } from "@radix-ui/react-icons"
 import { type PropsWithChildren, type SVGProps } from "react"
+import { useTableStore } from "."
 import { Badge } from "../badage"
 import { Button } from "../button"
 import { Checkbox } from "../checkbox"
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "../command"
 import { Input } from "../input"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../popover"
-import type { FilterState, Label, TableColumnItem } from "./model"
-import { GlobalCheckboxContext, type TableContext } from "./reducer"
+import type { Label, SelectFilterState, TextFilterState } from "./context/model"
 
-function commandLabel(Label: Label, context?: GlobalCheckboxContext) {
+function CommandLabel({ Label }: { Label: Label }) {
 	if (typeof Label === "string") {
 		return Label
 	}
-	if (typeof Label === "function") {
-		if (context) {
-			return <Label {...context} />
-		}
-		return null
+	if (typeof Label !== "function") {
+		return Label
 	}
-	return Label
+	return null
 }
 
 function MdiFilterPlusOutlineIcon(props: SVGProps<SVGSVGElement>) {
@@ -33,67 +30,76 @@ function MdiFilterPlusOutlineIcon(props: SVGProps<SVGSVGElement>) {
 	)
 }
 
-function TableToolbarAddFilters<T extends {}>({
-	columns,
-	filters,
-}: {
-	columns: TableColumnItem<T>[]
-	filters: Record<string, FilterState<T>>
-}) {
+function TableToolbarAddFilters() {
+	const useSelect = useTableStore()
+	const columns = useSelect(state => state.columns)
+	const filters = useSelect(state => state.filters)
+	const addFilter = useSelect(state => state.addFilter)
+	const removeFilter = useSelect(state => state.removeFilter)
 	return (
 		<PopoverClose>
 			<CommandList>
 				<CommandItem value="-" tw="hidden" />
-				{columns.map(({ id, label, filter, toggleFilter }) =>
-					filter && id !== "checkbox" ? (
+				{columns.map(({ id, label, filter }) => {
+					const filterId = id
+					return filter && id !== "checkbox" ? (
 						<CommandItem
 							key={id}
 							tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
-							onSelect={toggleFilter}
-							data-state={filters[id] ? "selected" : ""}
+							onSelect={() => {
+								if (filters[filterId]) {
+									removeFilter(filterId)
+								} else {
+									addFilter(filterId, label, filter)
+								}
+							}}
+							data-state={filters[filterId] ? "selected" : ""}
 						>
 							<CheckIcon />
-							<span tw="pointer-events-none capitalize">{commandLabel(label)}</span>
+							<span tw="pointer-events-none capitalize">
+								<CommandLabel Label={label} />
+							</span>
 						</CommandItem>
-					) : null,
-				)}
+					) : null
+				})}
 			</CommandList>
 		</PopoverClose>
 	)
 }
 
-function FilterButton<T extends {}>({ children, column, value, options }: PropsWithChildren<FilterState<T>>) {
-	if (!column.filter) {
-		return null
-	}
+function FilterText<T extends {}>({ children, filter }: PropsWithChildren<{ filter: TextFilterState<T> }>) {
+	const useSelect = useTableStore()
+	const setFilterText = useSelect(state => state.setFilterText)
+	const clearFilter = useSelect(state => state.clearFilter)
+	const removeFilter = useSelect(state => state.removeFilter)
 
-	if (typeof column.filter === "function") {
-		return (
-			<div tw="relative flex flex-nowrap">
-				<Popover placement="bottom-start">
-					<PopoverTrigger>
-						<Button
-							variant="outline"
-							size="sm"
-							tw="border-dashed z-10 h-8 rounded-r-none flex gap-2 items-center hover:(border-solid bg-background text-foreground)"
-						>
-							{children}
-							{value && (
-								<Badge variant="secondary" tw="whitespace-pre">
-									{value}
-								</Badge>
-							)}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent>
-						{({ close }) => {
-							return (
-								<Command tw="w-[clamp(200px, 37vw, 300px)]">
+	return (
+		<div tw="relative flex flex-nowrap">
+			<Popover placement="bottom-start">
+				<PopoverTrigger>
+					<Button
+						variant="outline"
+						size="sm"
+						tw="border-dashed z-10 h-8 rounded-r-none flex gap-1 items-center hover:(border-solid bg-background text-foreground)"
+					>
+						{children}
+						{filter.value && (
+							<Badge variant="secondary" tw="whitespace-pre">
+								{filter.value}
+							</Badge>
+						)}
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent>
+					{({ close }) => {
+						return (
+							<Command tw="w-[clamp(200px, 37vw, 300px)]">
+								<CommandList>
 									<CommandInput
-										placeholder={typeof column.label === "string" ? column.label : undefined}
+										placeholder={typeof filter.label === "string" ? filter.label : undefined}
 										autoFocus
-										value={value}
-										onValueChange={value => column.setFilterInput(value)}
+										value={filter.value}
+										onValueChange={value => setFilterText(filter.id, value)}
 										onKeyDown={e => {
 											if (e.key === "Enter") {
 												close()
@@ -102,26 +108,33 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 									/>
 									<div
 										tw="absolute right-4 top-[50%] translate-y-[-50%] text-foreground/50 hover:(text-primary cursor-pointer)"
-										onClick={column.clearFilter}
+										onClick={() => clearFilter(filter.id)}
 									>
 										<ResetIcon />
 									</div>
-								</Command>
-							)
-						}}
-					</PopoverContent>
-				</Popover>
-				<Button
-					variant="outline"
-					size="sm"
-					tw="border-dashed h-8 border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
-					onClick={column.toggleFilter}
-				>
-					<Cross2Icon />
-				</Button>
-			</div>
-		)
-	}
+								</CommandList>
+							</Command>
+						)
+					}}
+				</PopoverContent>
+			</Popover>
+			<Button
+				variant="outline"
+				size="sm"
+				tw="border-dashed h-8 border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
+				onClick={() => removeFilter(filter.id)}
+			>
+				<Cross2Icon />
+			</Button>
+		</div>
+	)
+}
+
+function FilterOptions<T extends {}>({ children, filter }: PropsWithChildren<{ filter: SelectFilterState<T> }>) {
+	const useSelect = useTableStore()
+	const clearFilter = useSelect(state => state.clearFilter)
+	const removeFilter = useSelect(state => state.removeFilter)
+	const toggleFilterOption = useSelect(state => state.toggleFilterOption)
 
 	return (
 		<div tw="relative flex flex-nowrap">
@@ -133,9 +146,9 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 						tw="border-dashed z-10 h-8 rounded-r-none flex gap-2 items-center hover:(border-solid bg-background text-foreground)"
 					>
 						{children}
-						{options.length > 0 && (
+						{filter.value.length > 0 && (
 							<div tw="flex gap-1">
-								{options.map((opt, i) => (
+								{filter.value.map((opt, i) => (
 									<Badge key={i} variant="secondary">
 										{opt.label}
 									</Badge>
@@ -148,40 +161,42 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 					<Command tw="w-[clamp(150px, 30vw, 200px)]">
 						<CommandInput
 							autoFocus
-							placeholder={typeof column.label === "string" ? column.label : undefined}
+							placeholder={typeof filter.label === "string" ? filter.label : undefined}
 						/>
-						<CommandGroup>
-							{/* <CommandItem value="-" tw="hidden" /> */}
-							{column.filter.map((opt, i) => {
-								const selected = new Set(options).has(opt)
-								return (
-									<CommandItem
-										key={i}
-										tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
-										data-state={selected ? "selected" : ""}
-										onSelect={() => column.toggleFilterOption(opt)}
-									>
-										<Checkbox
-											checked={selected}
-											readOnly
-											onClick={() => column.toggleFilterOption(opt)}
-										/>
-										<span tw="pointer-events-none capitalize">{opt.label}</span>
-									</CommandItem>
-								)
-							})}
-						</CommandGroup>
-						{(options.length > 0 || value) && (
-							<>
-								<CommandSeparator />
-								<CommandGroup>
-									<CommandItem tw="gap-2" onSelect={column.clearFilter}>
-										<ResetIcon />
-										Clear
-									</CommandItem>
-								</CommandGroup>
-							</>
-						)}
+						<CommandList>
+							<CommandGroup>
+								{/* <CommandItem value="-" tw="hidden" /> */}
+								{filter.options.map((opt, i) => {
+									const selected = new Set(filter.value).has(opt)
+									return (
+										<CommandItem
+											key={i}
+											tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
+											data-state={selected ? "selected" : ""}
+											onSelect={() => toggleFilterOption(filter.id, opt)}
+										>
+											<Checkbox
+												checked={selected}
+												readOnly
+												onClick={() => toggleFilterOption(filter.id, opt)}
+											/>
+											<span tw="pointer-events-none capitalize">{opt.label}</span>
+										</CommandItem>
+									)
+								})}
+							</CommandGroup>
+							{filter.value.length > 0 && (
+								<>
+									<CommandSeparator />
+									<CommandGroup>
+										<CommandItem tw="gap-2" onSelect={() => clearFilter(filter.id)}>
+											<ResetIcon />
+											Clear
+										</CommandItem>
+									</CommandGroup>
+								</>
+							)}
+						</CommandList>
 					</Command>
 				</PopoverContent>
 			</Popover>
@@ -189,7 +204,7 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 				variant="outline"
 				size="sm"
 				tw="border-dashed h-8 border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
-				onClick={column.toggleFilter}
+				onClick={() => removeFilter(filter.id)}
 			>
 				<Cross2Icon />
 			</Button>
@@ -197,60 +212,76 @@ function FilterButton<T extends {}>({ children, column, value, options }: PropsW
 	)
 }
 
-function TableToolbarFilters<T extends {}>({ filters }: { filters: Record<string, FilterState<T>> }) {
-	return Object.entries(filters).map(([id, filterState]) => (
-		<FilterButton<T> key={id} {...filterState}>
-			<PlusCircledIcon />
-			{commandLabel(filterState.column.label)}
-		</FilterButton>
-	))
+function TableToolbarFilters() {
+	const useSelect = useTableStore()
+	const filters = useSelect(state => state.filters)
+	return Object.entries(filters).map(([id, filter]) => {
+		if (filter.type === "text") {
+			return (
+				<FilterText key={id} filter={filter}>
+					<CommandLabel Label={filter.label} />
+				</FilterText>
+			)
+		}
+		return (
+			<FilterOptions key={id} filter={filter}>
+				<CommandLabel Label={filter.label} />
+			</FilterOptions>
+		)
+	})
 }
 
-function TableToolbarColumnView<T extends {}>({ columns }: { columns: TableColumnItem<T>[] }) {
+function TableToolbarColumnView() {
+	const useSelect = useTableStore()
+	const columns = useSelect(state => state.columns)
+	const selectColumn = useSelect(state => state.selectColumn)
 	return (
 		<PopoverContent>
 			{({ close }) => (
 				<Command tw="min-w-[140px]">
-					<CommandGroup heading="Toggle columns">
-						<CommandList>
+					<CommandList>
+						<CommandGroup heading="Toggle columns">
 							<CommandItem value="-" tw="hidden" />
-							{columns.map(({ id, label, selected, canSelected, toggleColumn }) =>
-								canSelected ? (
+							{columns.map(({ label, selected, canSelected }, columnIndex) => {
+								if (!canSelected) {
+									return null
+								}
+								return (
 									<CommandItem
-										key={id}
+										key={columnIndex}
 										tw="flex gap-2 [& svg]:invisible [&[data-state=selected] svg]:visible"
 										onSelect={() => {
-											toggleColumn()
+											selectColumn(columnIndex, selected => !selected)
 											close()
 										}}
 										data-state={selected ? "selected" : ""}
 									>
 										<CheckIcon />
-										<span tw="pointer-events-none capitalize">{commandLabel(label)}</span>
+										<span tw="pointer-events-none capitalize">
+											<CommandLabel Label={label} />
+										</span>
 									</CommandItem>
-								) : null,
-							)}
-						</CommandList>
-					</CommandGroup>
+								)
+							})}
+						</CommandGroup>
+					</CommandList>
 				</Command>
 			)}
 		</PopoverContent>
 	)
 }
 
-export function TableToolbar<T extends {}>(context: TableContext<T>) {
+export function TableToolbar() {
+	const useSelect = useTableStore()
+	const setGlobalSearch = useSelect(state => state.setGlobalSearch)
+	const value = useSelect(state => state.global.value)
 	return (
 		<div aria-label="table-toolbar" tw="z-10 flex flex-wrap gap-2">
 			<div tw="relative grow lg:max-w-[350px]">
-				<Input
-					placeholder="Search..."
-					value={context.globalSearch.value}
-					onChange={e => context.globalSearch.setValue(e.target.value)}
-					tw="h-8"
-				/>
+				<Input placeholder="Search..." value={value} onChange={e => setGlobalSearch(e.target.value)} tw="h-8" />
 				<div
 					tw="absolute right-4 top-[50%] translate-y-[-50%] text-foreground/50 hover:(text-primary cursor-pointer)"
-					onClick={context.globalSearch.clearValue}
+					onClick={() => setGlobalSearch("")}
 				>
 					<ResetIcon />
 				</div>
@@ -265,12 +296,12 @@ export function TableToolbar<T extends {}>(context: TableContext<T>) {
 				<PopoverContent>
 					<Command tw="min-w-[140px]">
 						<CommandGroup heading="Filters">
-							<TableToolbarAddFilters<T> filters={context.filters} columns={context.columns} />
+							<TableToolbarAddFilters />
 						</CommandGroup>
 					</Command>
 				</PopoverContent>
 			</Popover>
-			<TableToolbarFilters filters={context.filters} />
+			<TableToolbarFilters />
 			<Popover placement="bottom-end">
 				<PopoverTrigger>
 					<Button variant="outline" size="sm" tw="ml-auto px-3 h-8 flex gap-2 justify-between items-center">
@@ -278,7 +309,7 @@ export function TableToolbar<T extends {}>(context: TableContext<T>) {
 						<span>View</span>
 					</Button>
 				</PopoverTrigger>
-				<TableToolbarColumnView<T> columns={context.columns} />
+				<TableToolbarColumnView />
 			</Popover>
 		</div>
 	)
