@@ -16,15 +16,18 @@ import {
 	createContext,
 	isValidElement,
 	useContext,
+	useEffect,
 	useMemo,
+	useRef,
 	useState,
 	type ButtonHTMLAttributes,
 	type CSSProperties,
+	type DetailedReactHTMLElement,
 	type HTMLAttributes,
+	type MutableRefObject,
 	type PropsWithChildren,
 	type ReactElement,
 	type ReactNode,
-	type RefAttributes,
 } from "react"
 import { FormattedMessage } from "react-intl"
 import { Button, type ButtonProps } from "./button"
@@ -39,11 +42,16 @@ interface PopoverContext {
 	getFloatingProps: ReturnType<typeof useInteractions>["getFloatingProps"]
 	styles: CSSProperties
 	isMounted: boolean
+	onLeave(): void
 }
 
 const popoverContext = createContext<PopoverContext>(null as unknown as PopoverContext)
 
-export function PopoverTrigger({ children, ...props }: PropsWithChildren<Omit<ButtonProps, "onClick">>) {
+interface PopoverTriggerProps extends Omit<ButtonProps, "onClick"> {
+	mode?: "click" | "none"
+}
+
+export function PopoverTrigger({ children, mode = "click", ...props }: PropsWithChildren<PopoverTriggerProps>) {
 	const { setVisible, refs, getReferenceProps } = useContext(popoverContext)
 
 	if (Children.count(children) > 1 && Children.toArray(children).every(isValidElement)) {
@@ -58,16 +66,47 @@ export function PopoverTrigger({ children, ...props }: PropsWithChildren<Omit<Bu
 		)
 	}
 
-	const child = children as ReactElement<RefAttributes<HTMLElement>>
+	const child = children as ReactElement<HTMLAttributes<Element>> & {
+		ref: ((instance: HTMLElement | null) => void) | MutableRefObject<HTMLElement | null> | null
+	}
+
+	const innerProps = getReferenceProps({
+		ref: node => {
+			refs.setReference(node)
+			if (typeof child.ref === "function") {
+				child.ref(node as HTMLElement)
+			} else if (child.ref) {
+				child.ref.current = node as HTMLElement
+			}
+		},
+		onClick(e) {
+			if (mode === "click") {
+				setVisible(true)
+			}
+			child.props.onClick?.(e)
+		},
+	})
+
+	const keys = Object.getOwnPropertyNames(child.props)
+	for (const k of keys) {
+		if (k === "ref") {
+			continue
+		}
+		if (Object.prototype.hasOwnProperty.call(innerProps, k)) {
+			const ch = child.props[k]
+			const inner = innerProps[k]
+			if (typeof ch === "function" && typeof inner === "function") {
+				innerProps[k] = (...args: unknown[]) => {
+					ch(...args)
+					inner(...args)
+				}
+			}
+		}
+	}
 
 	return cloneElement(child, {
 		...props,
-		ref: refs.setReference,
-		...getReferenceProps({
-			onClick() {
-				setVisible(true)
-			},
-		}),
+		...innerProps,
 	})
 }
 
@@ -76,7 +115,17 @@ interface PopoverContentProps extends Omit<HTMLAttributes<HTMLDivElement>, "chil
 }
 
 export function PopoverContent({ children, ...props }: PopoverContentProps) {
-	const { isMounted, refs, floatingStyles, getFloatingProps, styles, setVisible } = useContext(popoverContext)
+	const { isMounted, refs, floatingStyles, getFloatingProps, styles, setVisible, onLeave } =
+		useContext(popoverContext)
+	const cb = useRef(onLeave)
+	useEffect(() => {
+		const onLeave = cb.current
+		return () => {
+			if (isMounted) {
+				onLeave()
+			}
+		}
+	}, [isMounted])
 	if (children == null) {
 		return null
 	}
@@ -109,7 +158,7 @@ export function PopoverClose({
 		)
 	}
 
-	const child = children as ReactElement<HTMLAttributes<HTMLElement>>
+	const child = children as DetailedReactHTMLElement<HTMLAttributes<HTMLElement>, HTMLElement>
 
 	return cloneElement(child, {
 		onClick: e => {
@@ -128,6 +177,7 @@ interface PopoverProps {
 	placement?: Placement
 	visible?: boolean
 	setVisible?(v: boolean | ((prev: boolean) => boolean)): void
+	onLeave?(): void
 }
 
 export function Popover({
@@ -135,15 +185,16 @@ export function Popover({
 	placement = "bottom",
 	visible,
 	setVisible = () => void 0,
+	onLeave = () => void 0,
 }: PropsWithChildren<PopoverProps>) {
 	const [innerVisible, innerSetVisible] = useState(false)
 
 	const ctx = useMemo(() => {
 		if (visible == null) {
-			return { visible: innerVisible, setVisible: innerSetVisible }
+			return { visible: innerVisible, setVisible: innerSetVisible, onLeave }
 		}
-		return { visible, setVisible }
-	}, [innerVisible, visible, setVisible])
+		return { visible, setVisible, onLeave }
+	}, [innerVisible, visible, setVisible, onLeave])
 
 	const { refs, floatingStyles, context } = useFloating({
 		open: ctx.visible,

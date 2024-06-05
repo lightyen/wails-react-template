@@ -3,7 +3,7 @@ import { tw } from "twobj"
 import { zs, type VariantProps } from "./lib"
 
 export const badgeVariants = zs(
-	tw`inline-flex items-baseline rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors
+	tw`inline-flex items-baseline rounded-md border px-2.5 py-0.5 text-sm font-semibold transition-colors
 	focus:(outline-none ring-2 ring-ring ring-offset-2)`,
 	{
 		variants: {

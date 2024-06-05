@@ -2,9 +2,6 @@ import { css } from "@emotion/react"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import {
 	Children,
-	ComponentProps,
-	PropsWithChildren,
-	ReactElement,
 	cloneElement,
 	createContext,
 	useContext,
@@ -13,6 +10,10 @@ import {
 	useMemo,
 	useRef,
 	useState,
+	type ComponentProps,
+	type HTMLAttributes,
+	type PropsWithChildren,
+	type ReactElement,
 } from "react"
 import { tw } from "twobj"
 import { getElementHeight, isElement } from "./lib"
@@ -32,11 +33,11 @@ interface AccordionContext {
 
 const accordionContext = createContext(null as unknown as AccordionContext)
 
-interface AccordionProps {
+interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
 	type?: "single" | "multiple"
 }
 
-export function Accordion({ type = "single", children }: PropsWithChildren<AccordionProps>) {
+export function Accordion({ type = "single", children, ...props }: PropsWithChildren<AccordionProps>) {
 	const result = useMemo(() => {
 		return Children.toArray(children)
 			.filter((e): e is ReactElement<ComponentProps<typeof AccordionItem>> => isElement(e, AccordionItem))
@@ -81,7 +82,7 @@ export function Accordion({ type = "single", children }: PropsWithChildren<Accor
 				items,
 			}}
 		>
-			<div>{result}</div>
+			<div {...props}>{result}</div>
 		</accordionContext.Provider>
 	)
 }

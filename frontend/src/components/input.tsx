@@ -1,10 +1,10 @@
-import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons"
+import { EyeNoneIcon, EyeOpenIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { forwardRef, useId, useState, type HTMLAttributes, type InputHTMLAttributes } from "react"
 import { tw } from "twobj"
 
 const input = tw`
-w-full flex-1 flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors
-file:(border-0 bg-transparent text-sm font-medium)
+w-full flex-1 flex h-9 min-h-[34px] text-sm rounded-md border border-input bg-background px-3 shadow-sm transition-colors
+file:(border-0 bg-background text-sm font-medium)
 placeholder:text-muted-foreground
 focus-within:(outline-none ring-1 ring-ring)
 disabled:(cursor-not-allowed opacity-50)
@@ -17,6 +17,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({ type, ...props 
 	return <input type={type} css={input} ref={ref} {...props} />
 })
 Input.displayName = "Input"
+
+export const SearchInput = forwardRef<HTMLInputElement, InputProps>(({ type, className, ...props }, ref) => {
+	return (
+		<div css={input} tw="items-center" className={className}>
+			<MagnifyingGlassIcon tw="mr-2 h-4 w-4 shrink-0 opacity-50" />
+			<input type={type} ref={ref} tw="grow h-full bg-background outline-none" {...props} />
+		</div>
+	)
+})
+SearchInput.displayName = "SearchInput"
 
 export const Password = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
 	({ id, "aria-invalid": invalid, disabled, type: _, className, ...props }, ref) => {
@@ -32,7 +42,7 @@ export const Password = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInp
 					autoCorrect="off"
 					spellCheck="false"
 					tabIndex={0}
-					tw="w-0 flex-1 focus-visible:outline-none bg-transparent [::-ms-reveal]:hidden disabled:cursor-not-allowed"
+					tw="w-0 flex-1 focus-visible:outline-none bg-background [::-ms-reveal]:hidden disabled:cursor-not-allowed"
 					type={reveal ? "text" : "password"}
 					disabled={disabled}
 					aria-invalid={invalid}

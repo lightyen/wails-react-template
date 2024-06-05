@@ -8,9 +8,9 @@ import {
 	isValidElement,
 	useEffect,
 	useMemo,
+	type DetailedReactHTMLElement,
 	type HTMLAttributes,
 	type PropsWithChildren,
-	type ReactElement,
 } from "react"
 import { FormattedMessage } from "react-intl"
 import { tw } from "twobj"
@@ -56,7 +56,7 @@ export function Toaster() {
 
 function ToastTitle({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
 	return (
-		<div tw="text-sm font-semibold [&+div]:text-xs" {...props}>
+		<div tw="text-base font-semibold [&+div]:text-sm" {...props}>
 			{children}
 		</div>
 	)
@@ -98,8 +98,8 @@ function ToastAction({ children, id }: PropsWithChildren<{ id: string }>) {
 		return (
 			<button
 				type="button"
-				tw="inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent
-			px-3 text-sm font-medium transition-colors
+				tw="inline-flex shrink-0 items-center justify-center rounded-md border bg-transparent
+			px-3 h-[34px] text-sm font-medium transition-colors
 			hover:bg-secondary focus:(outline-none ring-1 ring-ring) disabled:(pointer-events-none opacity-50)
 			group-[.destructive]:(
 				border-muted
@@ -118,7 +118,7 @@ function ToastAction({ children, id }: PropsWithChildren<{ id: string }>) {
 		)
 	}
 
-	const child = children as ReactElement<HTMLAttributes<HTMLElement>>
+	const child = children as DetailedReactHTMLElement<HTMLAttributes<HTMLElement>, HTMLElement>
 
 	return cloneElement(child, {
 		onClick: e => {

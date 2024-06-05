@@ -40,7 +40,6 @@ export const Switch = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInput
 				<label
 					htmlFor={id}
 					tabIndex={0}
-					role="checkbox"
 					tw="inline-flex h-[20px] w-[36px] shrink-0 cursor-pointer items-center rounded-full
 						border-2 border-transparent shadow-sm transition-colors
 						bg-input

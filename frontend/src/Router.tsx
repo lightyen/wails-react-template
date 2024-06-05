@@ -1,10 +1,10 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
 import { Layout } from "./layout"
-import { ComponentRoutes, Components } from "./pages/Components"
+import { ComponentRoutes } from "./pages/Component"
+import { FormRoutes } from "./pages/Form"
 import { Home } from "./pages/Home"
 import { NotFound } from "./pages/NotFound"
-import { TablePage } from "./pages/Table"
-import { TodoList } from "./pages/Todolist"
+import { TableRoutes } from "./pages/Table"
 
 const root = "/"
 
@@ -13,10 +13,9 @@ export const router = createBrowserRouter(
 		<Route path={root} Component={Layout}>
 			<Route index Component={Home} />
 			<Route path="*" Component={NotFound} />
-			<Route path="components" Component={Components} />
 			{ComponentRoutes}
-			<Route path="table" Component={TablePage} />
-			<Route path="todolist" Component={TodoList} />
+			{FormRoutes}
+			{TableRoutes}
 		</Route>,
 	),
 )

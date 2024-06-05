@@ -64,7 +64,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 				<label
 					htmlFor={id}
 					tabIndex={0}
-					role="checkbox"
 					tw="h-4 w-4 shrink-0 rounded-lg border border-primary shadow select-none cursor-pointer
 						focus-visible:(outline-none ring-1 ring-ring)
 						flex items-center text-current

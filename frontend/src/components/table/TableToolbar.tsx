@@ -80,7 +80,7 @@ function FilterText<T extends {}>({ children, filter }: PropsWithChildren<{ filt
 					<Button
 						variant="outline"
 						size="sm"
-						tw="border-dashed z-10 h-8 rounded-r-none flex gap-1 items-center hover:(border-solid bg-background text-foreground)"
+						tw="border-dashed z-10 rounded-r-none flex gap-1 items-center hover:(border-solid bg-background text-foreground)"
 					>
 						{children}
 						{filter.value && (
@@ -121,7 +121,7 @@ function FilterText<T extends {}>({ children, filter }: PropsWithChildren<{ filt
 			<Button
 				variant="outline"
 				size="sm"
-				tw="border-dashed h-8 border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
+				tw="border-dashed border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
 				onClick={() => removeFilter(filter.id)}
 			>
 				<Cross2Icon />
@@ -143,7 +143,7 @@ function FilterOptions<T extends {}>({ children, filter }: PropsWithChildren<{ f
 					<Button
 						variant="outline"
 						size="sm"
-						tw="border-dashed z-10 h-8 rounded-r-none flex gap-2 items-center hover:(border-solid bg-background text-foreground)"
+						tw="border-dashed z-10 rounded-r-none flex gap-2 items-center hover:(border-solid bg-background text-foreground)"
 					>
 						{children}
 						{filter.value.length > 0 && (
@@ -203,7 +203,7 @@ function FilterOptions<T extends {}>({ children, filter }: PropsWithChildren<{ f
 			<Button
 				variant="outline"
 				size="sm"
-				tw="border-dashed h-8 border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
+				tw="border-dashed border-l-0 rounded-l-none px-2 py-1 text-foreground/50 focus-visible:z-10 hover:(border-solid bg-muted text-primary)"
 				onClick={() => removeFilter(filter.id)}
 			>
 				<Cross2Icon />
@@ -278,7 +278,12 @@ export function TableToolbar() {
 	return (
 		<div aria-label="table-toolbar" tw="z-10 flex flex-wrap gap-2">
 			<div tw="relative grow lg:max-w-[350px]">
-				<Input placeholder="Search..." value={value} onChange={e => setGlobalSearch(e.target.value)} tw="h-8" />
+				<Input
+					tw="h-[34px]"
+					placeholder="Search..."
+					value={value}
+					onChange={e => setGlobalSearch(e.target.value)}
+				/>
 				<div
 					tw="absolute right-4 top-[50%] translate-y-[-50%] text-foreground/50 hover:(text-primary cursor-pointer)"
 					onClick={() => setGlobalSearch("")}
@@ -288,7 +293,7 @@ export function TableToolbar() {
 			</div>
 			<Popover placement="bottom-start">
 				<PopoverTrigger>
-					<Button variant="outline" size="sm" tw="px-3 h-8 flex gap-2 justify-between items-center">
+					<Button variant="outline" size="sm" tw="px-3 flex gap-2 justify-between items-center">
 						<MdiFilterPlusOutlineIcon />
 						Add Filter
 					</Button>
@@ -304,7 +309,7 @@ export function TableToolbar() {
 			<TableToolbarFilters />
 			<Popover placement="bottom-end">
 				<PopoverTrigger>
-					<Button variant="outline" size="sm" tw="ml-auto px-3 h-8 flex gap-2 justify-between items-center">
+					<Button variant="outline" size="sm" tw="ml-auto px-3 flex gap-2 justify-between items-center">
 						<MixerHorizontalIcon tw="h-4 w-4" />
 						<span>View</span>
 					</Button>

@@ -45,18 +45,18 @@ export function CommandMenu() {
 					<CommandItem
 						onSelect={() => {
 							setVisible(false)
-							navigate("/table")
+							navigate("/form")
 						}}
 					>
-						Table
+						Form
 					</CommandItem>
 					<CommandItem
 						onSelect={() => {
 							setVisible(false)
-							navigate("/todolist")
+							navigate("/table")
 						}}
 					>
-						Todoist
+						Table
 					</CommandItem>
 				</CommandGroup>
 			</CommandList>

@@ -10,6 +10,7 @@ import {
 	useState,
 	type ButtonHTMLAttributes,
 	type ComponentProps,
+	type DetailedReactHTMLElement,
 	type HTMLAttributes,
 	type PropsWithChildren,
 	type ReactElement,
@@ -84,7 +85,7 @@ export function SheetTrigger({ children, ...props }: PropsWithChildren<Omit<Butt
 		)
 	}
 
-	const child = children as ReactElement<HTMLAttributes<HTMLElement>>
+	const child = children as DetailedReactHTMLElement<HTMLAttributes<HTMLElement>, HTMLElement>
 
 	return cloneElement(child, {
 		...props,
@@ -101,13 +102,13 @@ function CloseButton() {
 			<button
 				type="button"
 				tw="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity
-	hover:opacity-100
-	focus:(outline-none ring-2 ring-ring ring-offset-2)
-	disabled:pointer-events-none"
+					hover:opacity-100
+					focus:(outline-none ring-2 ring-ring ring-offset-2)
+					disabled:pointer-events-none"
 			>
 				<Cross2Icon tw="h-4 w-4" />
 				<span tw="sr-only">
-					<FormattedMessage id="close" />
+					<FormattedMessage id="off" />
 				</span>
 			</button>
 		</SheetClose>
@@ -206,7 +207,7 @@ export function SheetClose({
 		)
 	}
 
-	const child = children as ReactElement<HTMLAttributes<HTMLElement>>
+	const child = children as DetailedReactHTMLElement<HTMLAttributes<HTMLElement>, HTMLElement>
 
 	return cloneElement(child, {
 		onClick: e => {

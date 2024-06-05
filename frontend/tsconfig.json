@@ -16,6 +16,7 @@
     "paths": {
       "@wails/*": ["./wailsjs/go/*"],
       "@wails/runtime": ["./wailsjs/runtime"],
+      "~/*": ["./src/*"],
       "@context": ["./src/context"],
       "@context/*": ["./src/context/*"],
       "@components/*": ["./src/components/*"],

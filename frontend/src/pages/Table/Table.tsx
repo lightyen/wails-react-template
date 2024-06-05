@@ -1,9 +1,9 @@
 import { Checkbox } from "@components/checkbox"
 import { Provider, TablePagination, TableToolbar, TableView, useTable } from "@components/table"
 import { useEffect, useState } from "react"
-import { MockRecord, data } from "./data"
+import { MockRecord, data } from "~/data/data"
 
-export function TablePage() {
+export function Component() {
 	// API like
 	const [source, setSource] = useState<MockRecord[]>(data)
 	// useEffect(() => {
