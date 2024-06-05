@@ -40,23 +40,36 @@ export function zs<V extends Variants<S>, S extends SerializedStyles = Serialize
 	}
 }
 
-export function isElement<F extends JSXElementConstructor<any> = JSXElementConstructor<any>>(
+export function isElement<C extends JSXElementConstructor<any> = JSXElementConstructor<any>>(
 	e: ReactNode,
-	f: F,
-): e is ReactElement<ComponentProps<F>, F> {
+	c: C,
+): e is ReactElement<ComponentProps<C>, C> {
 	if (!isValidElement(e)) {
 		return false
 	}
-	if (e.type === f) {
-		return true
+
+	if (typeof e.type === "function" && typeof c === "function") {
+		if (e.type === c) {
+			return true
+		}
+
+		if (process.env.NODE_ENV === "development") {
+			const a = e.type["name"]
+			const b = c["name"]
+			if (a && a === b) {
+				return true
+			}
+		}
 	}
 
 	const type = e.props["__EMOTION_TYPE_PLEASE_DO_NOT_USE__"]
-	if (type != null) {
-		if (type === f) {
+
+	if (typeof type === "function" && typeof c === "function") {
+		if (type === c) {
 			return true
 		}
 	}
+
 	return false
 }
 

@@ -54,14 +54,7 @@ export function RouterTabs({ children, to: propTo, onNavigate }: RouterTabsProps
 	const notMatched = labels.findIndex(({ props: { to } }) => to === stateTo) === -1
 
 	return (
-		<div
-			tw="pb-3 -mb-3 overflow-auto
-				sm:(
-					[::-webkit-scrollbar]:(w-[6px] h-[7px])
-					[::-webkit-scrollbar-thumb]:(bg-muted-foreground/20 hover:bg-muted-foreground/60)
-				)
-			"
-		>
+		<div tw="pb-3 -mb-3 overflow-auto">
 			<ul tw="text-sm leading-none font-semibold flex whitespace-nowrap bg-transparent -mb-1 border-b">
 				{labels.map(({ props: { to, title } }, i) => (
 					<li key={indices[i]} tw="-mb-px">

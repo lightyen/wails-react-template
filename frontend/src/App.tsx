@@ -7,8 +7,11 @@ import { router } from "./Router"
 import "./global.css"
 
 const bodyScrollbar = tw`not-mobile:(
-	[::-webkit-scrollbar]:(w-[7px] h-[7px])
-	[::-webkit-scrollbar-thumb]:(bg-foreground/15 hover:bg-foreground/20 bg-clip-content)
+	[@supports selector(::-webkit-scrollbar)]:(
+		[::-webkit-scrollbar]:(w-[7px] h-[7px])
+		hover:[::-webkit-scrollbar-thumb]:bg-foreground/20
+		[::-webkit-scrollbar-thumb]:(bg-muted bg-clip-content hover:bg-foreground/25)
+	)
 )`
 
 const appStyle = css`

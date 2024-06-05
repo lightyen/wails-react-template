@@ -175,7 +175,10 @@ function TabView() {
 			<RouterTabs onNavigate={navigate}>
 				<RouteTab title="Preview" to="preview" />
 				<RouteTab title="Code" to="code" />
-				<div></div>
+				<RouteTab title="Tab3" to="tab3" />
+				<RouteTab title="Tab4" to="tab4" />
+				<RouteTab title="Tab5" to="tab5" />
+				<RouteTab title="Tab6" to="tab6" />
 			</RouterTabs>
 			<Outlet />
 		</>
