@@ -13,10 +13,10 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"app/features"
-	"app/platform"
-	"app/platform/errors"
-	"app/platform/zlog"
+	"{{.ProjectName}}/features"
+	"{{.ProjectName}}/platform"
+	"{{.ProjectName}}/platform/errors"
+	"{{.ProjectName}}/platform/zlog"
 )
 
 //go:embed frontend/dist

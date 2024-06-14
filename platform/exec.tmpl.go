@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"app/platform/zlog"
+	"{{.ProjectName}}/platform/zlog"
 )
 
 type ExecOptions struct {

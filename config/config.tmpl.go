@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"app/platform"
+	"{{.ProjectName}}/platform"
 )
 
 var (

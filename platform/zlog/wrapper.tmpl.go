@@ -3,7 +3,7 @@ package zlog
 import (
 	"fmt"
 
-	"app/platform/errors"
+	"{{.ProjectName}}/platform/errors"
 )
 
 func terrors(args []any) []any {

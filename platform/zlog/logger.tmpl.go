@@ -5,7 +5,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"app/platform/errors"
+	"{{.ProjectName}}/platform/errors"
 )
 
 type LogLevel string

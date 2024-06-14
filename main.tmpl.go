@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"path/filepath"
 
-	"app/config"
-	"app/platform"
-	"app/platform/zlog"
+	"{{.ProjectName}}/config"
+	"{{.ProjectName}}/platform"
+	"{{.ProjectName}}/platform/zlog"
 )
 
 func appContext() (context.Context, context.CancelFunc) {
